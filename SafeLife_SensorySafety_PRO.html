@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeLife — Visually & Hearing Impaired Household · PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ THEME ENGINE ═══════════ */
+:root {
+  --navy:#0D1B2A; --navy-mid:#1A2F45;
+  --critical:#DC2626; --high:#EA580C; --medium:#D97706; --low:#16A34A;
+  --radius:12px;
+  --shadow:0 2px 12px rgba(13,27,42,0.08);
+  --shadow-lg:0 8px 32px rgba(13,27,42,0.14);
+}
+body[data-theme="chronic"] { --accent:#7A3B46; --accent-dark:#5F2E37; --accent-rgb:122,59,70; }
+body[data-theme="injury"] { --accent:#6E8CA0; --accent-dark:#56708D; --accent-rgb:110,140,160; }
+body[data-theme="teal"]   { --accent:#14B8A6; --accent-dark:#0D9488; --accent-rgb:20,184,166; }
+body[data-theme="amber"]  { --accent:#F59E0B; --accent-dark:#D97706; --accent-rgb:245,158,11; }
+body[data-theme="rose"]   { --accent:#E11D48; --accent-dark:#BE123C; --accent-rgb:225,29,72; }
+body[data-theme="violet"] { --accent:#7C3AED; --accent-dark:#6D28D9; --accent-rgb:124,58,237; }
+body[data-theme="ocean"]  { --accent:#2563EB; --accent-dark:#1D4ED8; --accent-rgb:37,99,235; }
+body[data-theme="forest"] { --accent:#16A34A; --accent-dark:#15803D; --accent-rgb:22,163,74; }
+body[data-theme="mobility"] { --accent:#3E6B8A; --accent-dark:#2F5268; --accent-rgb:62,107,138; }
+body[data-theme="sensory"] { --accent:#1B6E7A; --accent-dark:#134F57; --accent-rgb:27,110,122; }
+body[data-mode="light"] {
+  --bg:#F9F6F0; --surface:#FFFFFF; --surface-2:#EDE6D6; --tile:#F9F6F0;
+  --ink:#0D1B2A; --ink-mid:#3A4A5C; --ink-soft:#6B7A8D; --line:#EDE6D6;
+  --critical-bg:#FEF2F2; --high-bg:#FFF7ED; --medium-bg:#FFFBEB; --low-bg:#F0FDF4;
+}
+body[data-mode="dark"] {
+  --bg:#0B1420; --surface:#13202F; --surface-2:#1C2C3E; --tile:#0F1A28;
+  --ink:#EDF2F7; --ink-mid:#B7C4D1; --ink-soft:#8194A7; --line:#243549;
+  --critical-bg:rgba(220,38,38,.16); --high-bg:rgba(234,88,12,.16);
+  --medium-bg:rgba(217,119,6,.16); --low-bg:rgba(22,163,74,.16);
+  --shadow:0 2px 12px rgba(0,0,0,0.35); --shadow-lg:0 8px 32px rgba(0,0,0,0.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
+
+/* ═══════════ TOP BAR ═══════════ */
+.topbar{background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 20px;min-height:58px;position:relative;z-index:300;border-bottom:2px solid var(--accent);flex-wrap:wrap;}
+.topbar-brand{display:flex;align-items:center;gap:12px;}
+.topbar-logo{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;font-family:'Sora',sans-serif;color:#fff;box-shadow:0 2px 8px rgba(var(--accent-rgb),.4);}
+.topbar-name{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.3px;}
+.topbar-name span{color:var(--accent);}
+.topbar-tagline{font-size:11px;color:rgba(255,255,255,.5);font-style:italic;}
+.topbar-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.progress-pill{background:rgba(var(--accent-rgb),.15);border:1px solid rgba(var(--accent-rgb),.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.progress-pill span{color:#fff;font-size:13px;}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;}
+.tool-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px;transition:all .2s;position:relative;}
+.tool-btn:hover{background:rgba(var(--accent-rgb),.3);border-color:var(--accent);}
+.tool-btn .tb-label{font-size:11px;}
+@media(max-width:820px){.tool-btn .tb-label{display:none;}.topbar-tagline{display:none;}}
+
+/* ═══════════ DROPDOWN PANELS ═══════════ */
+.dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:10px;display:none;z-index:400;min-width:190px;}
+.dropdown.open{display:block;}
+.dropdown-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--ink-soft);padding:4px 8px 8px;}
+.theme-row{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border:none;background:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--ink);text-align:left;}
+.theme-row:hover{background:rgba(var(--accent-rgb),.08);}
+.theme-row.selected{background:rgba(var(--accent-rgb),.12);}
+.theme-swatch{width:18px;height:18px;border-radius:6px;flex-shrink:0;}
+.theme-row .check-mark{margin-left:auto;color:var(--accent);font-weight:800;}
+
+/* ═══════════ HERO ═══════════ */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,#3a2703 100%);padding:48px 32px 40px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(var(--accent-rgb),.14) 0%,transparent 60%);}
+.hero-emoji{font-size:64px;line-height:1;margin-bottom:12px;display:block;position:relative;}
+.hero-title{font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:#fff;margin-bottom:6px;position:relative;}
+.hero-subtitle{font-size:15px;color:rgba(255,255,255,.65);margin-bottom:20px;position:relative;}
+.hero-badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;position:relative;}
+.hero-badge{background:rgba(var(--accent-rgb),.15);border:1px solid rgba(var(--accent-rgb),.35);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:5px;cursor:pointer;transition:background .2s,transform .15s;user-select:none;}
+.hero-badge:hover{background:rgba(var(--accent-rgb),.28);transform:translateY(-1px);}
+
+/* ═══════════ PROGRESS ═══════════ */
+.progress-section{background:var(--surface);border-bottom:1px solid var(--line);padding:0 32px;height:46px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:290;box-shadow:0 2px 8px rgba(13,27,42,.06);}
+.progress-label{font-size:12px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
+.progress-track{flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:4px;width:0%;transition:width .4s ease;}
+.progress-count{font-size:13px;font-weight:700;color:var(--accent);white-space:nowrap;}
+.celebrate{display:none;background:linear-gradient(135deg,rgba(var(--accent-rgb),.15),rgba(var(--accent-rgb),.05));border-bottom:1px solid rgba(var(--accent-rgb),.3);padding:14px 32px;text-align:center;font-weight:700;color:var(--accent-dark);font-size:15px;font-family:'Sora',sans-serif;}
+.celebrate.show{display:block;}
+
+/* ═══════════ SEARCH ═══════════ */
+.search-wrap{padding:20px 20px 0;max-width:860px;margin:0 auto;}
+.search-box{width:100%;padding:10px 16px 10px 40px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:14px;font-family:'Inter',sans-serif;color:var(--ink);outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7A8D' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;transition:border-color .2s;}
+.search-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.1);}
+.search-no-results{text-align:center;padding:40px;color:var(--ink-soft);font-size:14px;display:none;}
+
+/* ═══════════ ZONE TABS ═══════════ */
+.zone-tabs{background:var(--surface);border-bottom:2px solid var(--line);display:flex;overflow-x:auto;padding:0 24px;gap:4px;scrollbar-width:none;position:sticky;top:46px;z-index:200;}
+.zone-tabs::-webkit-scrollbar{display:none;}
+.zone-tab{display:flex;align-items:center;gap:7px;padding:14px 18px;border:none;background:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;margin-bottom:-2px;}
+.zone-tab:hover{color:var(--accent);background:rgba(var(--accent-rgb),.05);}
+.zone-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.zone-tab-count{background:var(--surface-2);border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;color:var(--ink-soft);}
+.zone-tab.active .zone-tab-count{background:rgba(var(--accent-rgb),.15);color:var(--accent);}
+
+/* ═══════════ MAIN / STATS ═══════════ */
+.main{max-width:860px;margin:0 auto;padding:28px 20px 60px;}
+.stats-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
+.stat-pill{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;user-select:none;}
+.stat-pill:hover{border-color:var(--accent);}
+.stat-pill.filter-on{border-color:var(--accent);background:rgba(var(--accent-rgb),.08);box-shadow:0 0 0 2px rgba(var(--accent-rgb),.15);}
+.stat-dot{width:8px;height:8px;border-radius:50%;}
+.stat-dot.critical{background:var(--critical);}.stat-dot.high{background:var(--high);}.stat-dot.medium{background:var(--medium);}.stat-dot.low{background:var(--low);}
+.stat-count{font-size:15px;font-weight:700;}
+.risk-legend{display:flex;gap:12px;flex-wrap:wrap;margin-left:auto;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-soft);}
+.legend-dot{width:8px;height:8px;border-radius:3px;}
+
+/* ═══════════ ZONE PANEL ═══════════ */
+.zone-panel{display:none;}
+.zone-panel.active{display:block;}
+.zone-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding:20px 24px;background:var(--surface);border-radius:var(--radius);border:1px solid rgba(var(--accent-rgb),.2);box-shadow:var(--shadow);}
+.zone-icon{width:52px;height:52px;background:linear-gradient(135deg,rgba(var(--accent-rgb),.12),rgba(var(--accent-rgb),.06));border:2px solid rgba(var(--accent-rgb),.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.zone-header-text h2{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.zone-header-text p{font-size:13px;color:var(--ink-soft);}
+
+/* ═══════════ CHECK CARDS ═══════════ */
+.checks-list{display:flex;flex-direction:column;gap:10px;}
+.check-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .2s;}
+.check-card:hover{box-shadow:var(--shadow-lg);}
+.check-card.completed{border-color:rgba(var(--accent-rgb),.3);background:rgba(var(--accent-rgb),.03);}
+.check-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;}
+.check-checkbox{width:22px;height:22px;min-width:22px;border:2px solid var(--surface-2);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:13px;background:var(--surface);}
+.check-card.completed .check-checkbox{background:var(--accent);border-color:var(--accent);color:#fff;}
+.check-num{font-size:10px;font-weight:700;color:var(--ink-soft);min-width:30px;font-family:'Sora',sans-serif;}
+.check-risk{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+.risk-critical{background:var(--critical-bg);color:var(--critical);}
+.risk-high{background:var(--high-bg);color:var(--high);}
+.risk-medium{background:var(--medium-bg);color:var(--medium);}
+.risk-low{background:var(--low-bg);color:var(--low);}
+.check-title{flex:1;font-size:14px;font-weight:600;color:var(--ink);line-height:1.4;}
+.check-card.completed .check-title{color:var(--ink-soft);text-decoration:line-through;}
+.check-chevron{font-size:12px;color:var(--ink-soft);transition:transform .25s;min-width:16px;}
+.check-card.open .check-chevron{transform:rotate(180deg);}
+.check-detail{display:none;padding:0 18px 18px 18px;border-top:1px solid var(--line);}
+.check-card.open .check-detail{display:block;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+@media(max-width:600px){.detail-grid{grid-template-columns:1fr;}}
+.detail-item{background:var(--tile);border-radius:8px;padding:11px 13px;}
+.detail-item.full{grid-column:1/-1;}
+.detail-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--accent-dark);margin-bottom:4px;display:flex;align-items:center;gap:5px;}
+body[data-mode="dark"] .detail-label{color:var(--accent);}
+.detail-value{font-size:13px;color:var(--ink);line-height:1.55;}
+.tip-box{margin-top:12px;background:linear-gradient(135deg,rgba(var(--accent-rgb),.08),rgba(var(--accent-rgb),.04));border:1px solid rgba(var(--accent-rgb),.25);border-left:4px solid var(--accent);border-radius:8px;padding:11px 14px;display:flex;gap:10px;align-items:flex-start;}
+.tip-icon{font-size:16px;line-height:1;margin-top:1px;}
+.tip-text{font-size:13px;color:var(--ink);line-height:1.55;}
+.tip-text strong{color:var(--accent-dark);font-weight:700;}
+body[data-mode="dark"] .tip-text strong{color:var(--accent);}
+.measurement-box{margin-top:10px;background:rgba(var(--accent-rgb),.05);border:1px solid var(--line);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--ink-mid);line-height:1.5;font-family:'Sora',sans-serif;}
+.measurement-box strong{color:var(--ink);font-size:11px;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px;}
+
+/* ═══════════ ZONE ACTIONS ═══════════ */
+.zone-actions{display:flex;justify-content:flex-end;gap:10px;margin:14px 0 18px;flex-wrap:wrap;}
+.btn{padding:9px 18px;border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;}
+.btn-outline{background:var(--surface);border:1px solid var(--line);color:var(--ink-mid);}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 2px 8px rgba(var(--accent-rgb),.3);}
+.btn-primary:hover{box-shadow:0 4px 16px rgba(var(--accent-rgb),.4);transform:translateY(-1px);}
+
+/* ═══════════ MODALS ═══════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,27,42,.6);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:16px;max-width:640px;width:100%;box-shadow:var(--shadow-lg);border-top:4px solid var(--accent);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--line);}
+.modal-head h3{font-family:'Sora',sans-serif;font-size:18px;color:var(--ink);display:flex;align-items:center;gap:8px;}
+.modal-close{background:none;border:none;font-size:22px;color:var(--ink-soft);cursor:pointer;line-height:1;padding:4px;}
+.modal-close:hover{color:var(--accent);}
+.modal-body{padding:20px 24px 26px;color:var(--ink-mid);font-size:13.5px;}
+.modal-body h4{font-family:'Sora',sans-serif;font-size:14px;color:var(--ink);margin:16px 0 6px;display:flex;align-items:center;gap:6px;}
+.modal-body h4:first-child{margin-top:0;}
+.modal-body p{margin-bottom:8px;}
+.modal-body table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0;}
+.modal-body th{text-align:left;padding:7px 10px;background:rgba(var(--accent-rgb),.1);color:var(--ink);font-size:11px;text-transform:uppercase;letter-spacing:.5px;}
+.modal-body td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--ink-mid);}
+.modal-body td strong{color:var(--ink);}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;padding:0 24px 22px;flex-wrap:wrap;}
+.rule-list{list-style:none;margin:6px 0;}
+.rule-list li{padding:6px 0 6px 26px;position:relative;border-bottom:1px dashed var(--line);}
+.rule-list li::before{content:'✓';position:absolute;left:2px;color:var(--accent);font-weight:800;}
+
+/* ═══════════ COLLECTION / UPSELL ═══════════ */
+.collection{max-width:860px;margin:0 auto;padding:10px 20px 50px;}
+.collection h3{font-family:'Sora',sans-serif;font-size:18px;color:var(--ink);margin-bottom:4px;}
+.collection>p{font-size:13px;color:var(--ink-soft);margin-bottom:16px;}
+.collection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
+.module-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px;transition:all .2s;}
+.module-card:hover{border-color:var(--accent);box-shadow:var(--shadow);}
+.module-card .m-emoji{font-size:26px;}
+.module-card .m-name{font-family:'Sora',sans-serif;font-weight:700;font-size:13.5px;color:var(--ink);}
+.module-card .m-age{font-size:11.5px;color:var(--ink-soft);}
+.module-tag{margin-top:6px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-radius:6px;padding:3px 8px;align-self:flex-start;}
+.module-tag.owned{background:rgba(var(--accent-rgb),.15);color:var(--accent-dark);}
+body[data-mode="dark"] .module-tag.owned{color:var(--accent);}
+.module-tag.addon{background:var(--surface-2);color:var(--ink-soft);}
+.module-tag.coming{background:transparent;color:var(--ink-soft);border:1px dashed var(--line);}
+
+/* ═══════════ FOOTER ═══════════ */
+.footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:24px;font-size:12px;line-height:1.8;}
+.footer strong{color:rgba(255,255,255,.8);}
+
+/* ═══════════ TRADEMARK ICON SET ═══════════ */
+.zic svg{width:16px;height:16px;vertical-align:-3px;}
+.zone-tab .zic svg{color:inherit;}
+.topbar-logo svg{width:22px;height:22px;color:#fff;}
+.hero-emoji svg{width:72px;height:72px;color:var(--accent);filter:drop-shadow(0 4px 14px rgba(var(--accent-rgb),.45));}
+.zone-icon svg{width:27px;height:27px;color:var(--accent-dark);}
+body[data-mode="dark"] .zone-icon svg{color:var(--accent);}
+.module-card .m-emoji svg{width:30px;height:30px;color:var(--accent-dark);}
+body[data-mode="dark"] .module-card .m-emoji svg{color:var(--accent);}
+
+/* ═══════════ FLOATING NAV / DISCLAIMERS ═══════════ */
+html{scroll-behavior:smooth;}
+.float-nav{position:fixed;right:16px;bottom:20px;display:flex;flex-direction:column;gap:8px;z-index:250;}
+html[dir="rtl"] .float-nav{right:auto;left:16px;}
+.float-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--accent-dark);font-size:18px;font-weight:800;cursor:pointer;box-shadow:var(--shadow-lg);transition:all .2s;}
+.float-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-2px);}
+body[data-mode="dark"] .float-btn{color:var(--accent);}
+.zone-disclaimer{margin-top:18px;padding:10px 14px;border:1px dashed var(--line);border-radius:8px;font-size:11.5px;color:var(--ink-soft);text-align:center;}
+.print-disclaimer{display:none;}
+
+/* ═══════════ PRINT ═══════════ */
+#cheat-print{display:none;}
+@media print{
+  body{background:#fff !important;color:#000;font-size:11px;margin:0 !important;padding:0 !important;}
+  .topbar,.hero,.search-wrap,.zone-tabs,.progress-section,.zone-actions,.stats-bar,.collection,.modal-overlay,.celebrate,.dropdown{display:none !important;}
+  .main{max-width:100%;padding:0 0 30px;}
+  .check-card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid;margin-bottom:6px;}
+  .check-detail{display:block !important;border-top:1px solid #ddd;}
+  .check-chevron{display:none;}
+  .zone-panel{display:block !important;page-break-before:auto;}
+  .zone-header{box-shadow:none;border:1px solid #ccc;margin-top:14px;}
+  body.print-zone .zone-panel{display:none !important;}
+  body.print-zone .zone-panel.active{display:block !important;}
+  body.print-cheat .main,body.print-cheat .footer,body.print-cheat .zone-panel,body.print-cheat .print-disclaimer{display:none !important;}
+  body.print-cheat #cheat-print{display:block !important;}
+  #cheat-print{margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cp-card{border:2.5px solid #0D1B2A;border-radius:16px;overflow:hidden;font-family:'Inter',sans-serif;color:#0D1B2A;height:272mm;display:flex;flex-direction:column;page-break-inside:avoid;page-break-after:avoid;}
+  .cp-head{background:#0D1B2A !important;color:#fff;display:flex;align-items:center;gap:12px;padding:13px 22px;}
+  .cp-head svg{width:38px;height:38px;color:var(--accent);}
+  .cp-title{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;line-height:1.2;}
+  .cp-title em{color:var(--accent);font-style:normal;}
+  .cp-sub{font-size:11.5px;color:rgba(255,255,255,.78);margin-top:2px;}
+  .cp-tag{margin-left:auto;font-size:10px;font-style:italic;color:rgba(255,255,255,.65);text-align:right;}
+  .cp-contacts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:11px 22px;background:rgba(var(--accent-rgb),.09) !important;}
+  .cp-chip{border:1.2px solid rgba(var(--accent-rgb),.55);border-radius:8px;padding:5px 9px;background:#fff !important;}
+  .cp-chip b{display:block;font-size:8.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--accent-dark);}
+  .cp-chip span{font-size:12px;font-weight:700;}
+  .cp-cols{display:flex;gap:20px;padding:13px 22px 6px;flex:1;min-height:0;overflow:hidden;}
+  .cp-cols h3{font-family:'Sora',sans-serif;font-size:13px;border-bottom:2px solid var(--accent);padding-bottom:3px;margin:0 0 8px;}
+  .cp-rules{flex:1.15;}
+  .cp-rules ul{list-style:none;margin:0;padding:0;}
+  .cp-rules li{font-size:11px;line-height:1.5;padding:4px 0 4px 18px;position:relative;border-bottom:1px dashed #ddd;}
+  .cp-rules li::before{content:'✓';position:absolute;left:0;color:var(--accent-dark);font-weight:800;}
+  html[dir="rtl"] .cp-rules li{padding:4px 18px 4px 0;}
+  html[dir="rtl"] .cp-rules li::before{left:auto;right:0;}
+  .cp-numsec{flex:1;}
+  .cp-numsec table{width:100%;border-collapse:collapse;font-size:10.5px;}
+  .cp-numsec td{border-bottom:1px solid #eee;padding:4px 5px;vertical-align:top;}
+  .cp-numsec td strong{color:#0D1B2A;}
+  .cp-notes{margin:6px 22px 10px;border:1.5px dashed var(--accent);border-radius:10px;padding:8px 13px;font-size:11px;white-space:pre-wrap;max-height:34mm;overflow:hidden;}
+  .cp-notes b{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent-dark);display:block;margin-bottom:2px;}
+  .cp-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#0D1B2A !important;color:rgba(255,255,255,.85);padding:9px 22px;font-size:10px;line-height:1.55;margin-top:auto;}
+  .cp-foot b{color:var(--accent);}
+  .cp-qr{display:flex;align-items:center;gap:10px;text-align:right;}
+  .cp-qr img{width:68px;height:68px;background:#fff;border-radius:8px;padding:3px;}
+  .cp-qr .qr-ph{width:68px;height:68px;border:1.5px dashed rgba(255,255,255,.5);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:8.5px;text-align:center;color:rgba(255,255,255,.6);padding:4px;}
+  .footer{background:#fff;color:#555;}
+  .footer strong{color:#000;}
+  .float-nav{display:none !important;}
+  .print-disclaimer{display:block !important;position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:8.5px;color:#666;border-top:1px solid #ccc;padding:3px 0;background:#fff;}
+  @page{size:A4;margin:10mm 10mm 12mm;}
+}
+</style>
+</head>
+<body data-theme="sensory" data-mode="light">
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo" id="logo-icon">S</div>
+    <div>
+      <div class="topbar-name">Safe<span>Life</span></div>
+      <div class="topbar-tagline">To all moms by a mom · NEBOSH &amp; OSHA Professional</div>
+    </div>
+  </div>
+  <div class="topbar-meta">
+    <div class="toolbar">
+      <button class="tool-btn" id="btn-search" title="Search all checks">🔍</button>
+      <button class="tool-btn" id="btn-manual" title="User Manual">📖<span class="tb-label" data-i18n="manual">Manual</span></button>
+      <button class="tool-btn" id="btn-cheat" title="Emergency Cheat Sheet">🚨<span class="tb-label" data-i18n="cheat">Cheat Sheet</span></button>
+      <button class="tool-btn" id="btn-print" title="Print / Save as PDF">🖨️<span class="tb-label" data-i18n="printPdf">Print / PDF</span></button>
+      <button class="tool-btn" id="btn-save" title="Save progress to file">💾<span class="tb-label" data-i18n="save">Save</span></button>
+      <button class="tool-btn" id="btn-load" title="Load saved progress">📂<span class="tb-label" data-i18n="load">Load</span></button>
+      <button class="tool-btn" id="btn-lang" title="Language" style="display:none">🌐<span class="tb-label" id="lang-label">EN</span>
+        <div class="dropdown" id="dd-lang"></div>
+      </button>
+      <button class="tool-btn" id="btn-theme" title="Colour theme">🎨<span class="tb-label" data-i18n="theme">Theme</span>
+        <div class="dropdown" id="dd-theme"></div>
+      </button>
+      <button class="tool-btn" id="btn-mode" title="Light / dark mode">🌙</button>
+    </div>
+    <div class="progress-pill"><span id="topbar-done">0</span>&nbsp;/ 84 <span data-i18n="checksDone" style="color:inherit;font-size:12px;">checks done</span></div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-emoji" id="hero-icon">🦯</span>
+  <div class="hero-title" data-i18n="heroTitle">Visually &amp; Hearing Impaired Household</div>
+  <div class="hero-subtitle" data-i18n="heroSub">84 practical safety checks across 6 zones · Supporting safe, dignified, independent daily living for household members who are visually or hearing impaired</div>
+  <div class="hero-badges">
+    <div class="hero-badge" data-zone="1"><span class="zic" data-zi="z1"></span> <span data-i18n="bz1">Layout, Lighting &amp; Trip Hazards</span></div>
+    <div class="hero-badge" data-zone="2"><span class="zic" data-zi="z2"></span> <span data-i18n="bz2">Alarms &amp; Emergency Alerts</span></div>
+    <div class="hero-badge" data-zone="3"><span class="zic" data-zi="z3"></span> <span data-i18n="bz3">Kitchen &amp; Appliance Safety</span></div>
+    <div class="hero-badge" data-zone="4"><span class="zic" data-zi="z4"></span> <span data-i18n="bz4">Communication &amp; Assistive Tech</span></div>
+    <div class="hero-badge" data-zone="5"><span class="zic" data-zi="z5"></span> <span data-i18n="bz5">Outdoor &amp; Community Safety</span></div>
+    <div class="hero-badge" data-zone="6"><span class="zic" data-zi="z6"></span> <span data-i18n="bz6">Family &amp; Caregiver Support</span></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-section">
+  <div class="progress-label" data-i18n="overallProgress">Overall Progress</div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="progress-count" id="progress-count">0 of 84</div>
+</div>
+<div class="celebrate" id="celebrate">🎉 <span data-i18n="celebrate">All 84 checks complete — your household is set up for safe, confident, independent living. Print your checklist as a keepsake.</span></div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <input class="search-box" type="text" id="search-input" placeholder="Search checks… e.g. visual smoke alarm, bed shaker, tactile marker, captioning, cane technique, evacuation plan…">
+</div>
+
+<!-- ZONE TABS -->
+<div class="zone-tabs" id="zone-tabs">
+  <button class="zone-tab active" data-zone="1"><span class="zic" data-zi="z1"></span> <span data-i18n="z1">Home Layout, Lighting &amp; Trip-Hazard Safety</span> <span class="zone-tab-count" id="ztc-1">0/14</span></button>
+  <button class="zone-tab" data-zone="2"><span class="zic" data-zi="z2"></span> <span data-i18n="z2">Alarms, Alerts &amp; Emergency Notification</span> <span class="zone-tab-count" id="ztc-2">0/14</span></button>
+  <button class="zone-tab" data-zone="3"><span class="zic" data-zi="z3"></span> <span data-i18n="z3">Kitchen &amp; Appliance Safety</span> <span class="zone-tab-count" id="ztc-3">0/14</span></button>
+  <button class="zone-tab" data-zone="4"><span class="zic" data-zi="z4"></span> <span data-i18n="z4">Communication &amp; Assistive Technology</span> <span class="zone-tab-count" id="ztc-4">0/14</span></button>
+  <button class="zone-tab" data-zone="5"><span class="zic" data-zi="z5"></span> <span data-i18n="z5">Outdoor Movement &amp; Community Safety</span> <span class="zone-tab-count" id="ztc-5">0/14</span></button>
+  <button class="zone-tab" data-zone="6"><span class="zic" data-zi="z6"></span> <span data-i18n="z6">Family Communication, Caregiver Support &amp; Emergency Preparedness</span> <span class="zone-tab-count" id="ztc-6">0/14</span></button>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main-content">
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-pill" data-risk="critical"><span class="stat-dot critical"></span><span class="stat-count" id="s-critical">0</span> <span data-i18n="critical">Critical</span></div>
+    <div class="stat-pill" data-risk="high"><span class="stat-dot high"></span><span class="stat-count" id="s-high">0</span> <span data-i18n="high">High</span></div>
+    <div class="stat-pill" data-risk="medium"><span class="stat-dot medium"></span><span class="stat-count" id="s-medium">0</span> <span data-i18n="medium">Medium</span></div>
+    <div class="stat-pill" data-risk="low"><span class="stat-dot low"></span><span class="stat-count" id="s-low">0</span> <span data-i18n="low">Low</span></div>
+    <div class="risk-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--critical)"></div><span data-i18n="legendCritical">Critical = immediate action</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--high)"></div><span data-i18n="legendHigh">High = urgent attention</span></div>
+    </div>
+  </div>
+  <div id="search-no-results" class="search-no-results"><span data-i18n="noResults">No checks match your search. Try different keywords.</span><br><span data-i18n="notCovered" style="font-size:12.5px;"></span></div>
+</div>
+
+<!-- COLLECTION -->
+<div class="collection">
+  <h3 data-i18n="collTitle">The SafeLife Collection</h3>
+  <p data-i18n="collSub">One safety system for every stage of life. Add more modules any time — each works exactly like this one.</p>
+  <div class="collection-grid" id="collection-grid"></div>
+</div>
+
+<!-- SITUATION MODULES -->
+<div class="collection" style="padding-top:0;">
+  <h3>Situation Modules</h3>
+  <p>Real-life situations and conditions — each its own complete, standalone 84-check system. Available separately as they launch.</p>
+  <div class="collection-grid" id="situation-grid"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>SafeLife</strong> · Visually &amp; Hearing Impaired Household Module · PRO Edition<br>
+  Created by a NEBOSH &amp; OSHA trained HSE professional · "To all moms by a mom"<br>
+  Evidence base: WHO guidance on vision impairment, hearing loss and rehabilitation · recognised accessible-design and orientation-and-mobility guidance · recognised guidance for visual/hearing accessibility<br>
+  <span style="color:rgba(255,255,255,.35);" data-i18n="disclaimer">This checklist is educational general safety guidance. For specific assistive technology, mobility training, or communication strategies, consult an orientation and mobility specialist, audiologist, or qualified accessibility professional for advice specific to your needs.</span>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-manual">
+  <div class="modal">
+    <div class="modal-head"><h3>📖 <span data-i18n="manualTitle">User Manual</span></h3><button class="modal-close" data-close="modal-manual">✕</button></div>
+    <div class="modal-body" id="manual-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-cheat">
+  <div class="modal">
+    <div class="modal-head"><h3>🚨 <span data-i18n="cheatTitle">Emergency Cheat Sheet</span></h3><button class="modal-close" data-close="modal-cheat">✕</button></div>
+    <div class="modal-body" id="cheat-body"></div>
+    <div class="modal-actions"><button class="btn btn-outline" id="btn-seller" title="Seller: set this product's QR code" style="margin-right:auto;">⚙</button><button class="btn btn-primary" id="btn-print-cheat" data-i18n="printCheat">🖨️ Print cheat sheet</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-seller">
+  <div class="modal">
+    <div class="modal-head"><h3>⚙ Seller Settings</h3><button class="modal-close" data-close="modal-seller">✕</button></div>
+    <div class="modal-body" id="seller-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-print">
+  <div class="modal">
+    <div class="modal-head"><h3>🖨️ <span data-i18n="printTitle">Print or Save as PDF</span></h3><button class="modal-close" data-close="modal-print">✕</button></div>
+    <div class="modal-body">
+      <p data-i18n="printHint">Choose what to print. To save as a PDF instead of printing on paper, choose "Save as PDF" as the printer in the print dialog.</p>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-top:6px;" data-i18n="printNote">All checks are automatically expanded to full detail when printing — no need to open them first.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="print-zone" data-i18n="printZone">Current zone only</button>
+      <button class="btn btn-outline" id="print-cheat2" data-i18n="printCheat2">Cheat sheet</button>
+      <button class="btn btn-primary" id="print-all" data-i18n="printAll">Full checklist (all 84)</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="load-file" accept=".json" style="display:none">
+
+<!-- FLOATING CHECK NAVIGATION -->
+<div class="float-nav">
+  <button class="float-btn" id="fn-top" title="Back to top">⤒</button>
+  <button class="float-btn" id="fn-prev" title="Previous check">↑</button>
+  <button class="float-btn" id="fn-next" title="Next check">↓</button>
+</div>
+
+<!-- PRINT PAGE DISCLAIMER (repeats on every printed page) -->
+<div class="print-disclaimer" data-i18n="disclaimer">This checklist is educational general safety guidance. For specific assistive technology, mobility training, or communication strategies, consult an orientation and mobility specialist, audiologist, or qualified accessibility professional for advice specific to your needs.</div>
+
+<div id="cheat-print"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// SELLER BRANDING — edit these three lines to make it yours
+// ═══════════════════════════════════════════
+const BRAND_NAME = 'The Snag Tag';
+const STORE_URL  = '';   // e.g. 'thesnagtag.gumroad.com' — printed under the QR code on the cheat sheet
+const QR_IMAGE   = '';   // paste your QR code as a data URL: 'data:image/png;base64,...'
+
+// ═══════════════════════════════════════════
+// I18N — full interface language packs (check content in English, verified guidance)
+// ═══════════════════════════════════════════
+const I18N = {
+en:{name:'English',manual:'Manual',cheat:'Cheat Sheet',printPdf:'Print / PDF',save:'Save',load:'Load',theme:'Theme',checksDone:'checks done',heroTitle:'Visually &amp; Hearing Impaired Household',heroSub:'84 practical safety checks across 6 zones · Supporting safe, dignified, independent daily living for household members who are visually or hearing impaired',bz1:'Layout, Lighting &amp; Trip Hazards',bz2:'Alarms &amp; Emergency Alerts',bz3:'Kitchen &amp; Appliance Safety',bz4:'Communication &amp; Assistive Tech',bz5:'Outdoor &amp; Community Safety',bz6:'Family &amp; Caregiver Support',overallProgress:'Overall Progress',ofWord:'of',z1:'Home Layout, Lighting &amp; Trip-Hazard Safety',z2:'Alarms, Alerts &amp; Emergency Notification',z3:'Kitchen &amp; Appliance Safety',z4:'Communication &amp; Assistive Technology',z5:'Outdoor Movement &amp; Community Safety',z6:'Family Communication, Caregiver Support &amp; Emergency Preparedness',zd1:'14 checks: consistent furniture placement and decluttered pathways, high-contrast marking on steps and thresholds, even ambient and task lighting, removing loose rugs and securing cords, tactile flooring transitions, marking glass doors and furniture edges, and a consistent "home base" system for frequently used items.',zd2:'14 checks: visual (strobe) smoke and carbon monoxide alarms, vibrating alarm and bed-shaker devices, flashing doorbell and phone-alert systems, making sure alerts reach every sense together, backup power for alert systems, regular testing, and a written or visual emergency action plan.',zd3:'14 checks: tactile markers on oven and stove dials, high-contrast or talking timers, large-print, braille or tactile labelling for food and medication, safe stovetop adaptations, appliance auto-shutoff features, consistent organised storage, and safe knife and sharp-object handling adaptations.',zd4:'14 checks: hearing aid and cochlear implant care and battery management, screen-reader and magnification technology, captioning on devices and television, keeping devices charged and accessible, a communication plan for medical and emergency situations, teaching household members clear communication habits, and technology as a support alongside good design, not a replacement for it.',zd5:'14 checks: cane or guide dog considerations, safe route planning and rehearsal, crossing-safety adaptations, public transport considerations, weather-related hazard awareness for reduced sensory feedback, carrying identification and medical information, and community and neighbour awareness.',zd6:'14 checks: household members trained in the person\'s specific communication and mobility needs, respecting autonomy and avoiding over-helping, evacuation planning that accounts for not hearing alarms or seeing exit signs, a buddy system for emergencies, the caregiver\'s own understanding of assistive technology, peer support and community resources, and full participation in home life.',critical:'Critical',high:'High',medium:'Medium',low:'Low',legendCritical:'Critical = immediate action',legendHigh:'High = urgent attention',noResults:'No checks match your search. Try different keywords.',searchPh:'Search checks… e.g. visual smoke alarm, bed shaker, tactile marker, captioning, cane technique, evacuation plan…',who:'Who',what:'What',where:'Where',why:'Why',how:'How',standards:'Standards &amp; Measurements',example:'Real-World Example',quickTip:'Quick Win',markAll:'Mark All Complete',unmarkAll:'Unmark All',expandAll:'Expand All',collapseAll:'Collapse All',celebrate:'All 84 checks complete — your household is set up for safe, confident, independent living. Print your checklist as a keepsake.',collTitle:'The SafeLife Collection',collSub:'One safety system for every stage of life. Every module below is a complete, standalone 84-check system — available separately, or as the full 12-module bundle.',owned:'✓ Current Module',addon:'Available Separately',disclaimer:'This checklist is educational general safety guidance. For specific assistive technology, mobility training, or communication strategies, consult an orientation and mobility specialist, audiologist, or qualified accessibility professional for advice specific to your needs.',manualTitle:'User Manual',cheatTitle:'Emergency Cheat Sheet',printTitle:'Print or Save as PDF',printHint:'Choose what to print. To save as a PDF instead of printing on paper, choose "Save as PDF" as the printer in the print dialog.',printZone:'Current zone only',printCheat2:'Cheat sheet',printAll:'Full checklist (all 84)',printCheat:'🖨️ Print cheat sheet',langNote:'Safety check content is written in English (verified international guidance). Interface labels switch language.',saved:'Progress saved',loaded:'Progress loaded',cheatContacts:'My emergency contacts',cheatHint:'Make it yours: edit any name or number, add or delete rows. Everything saves automatically on this device and prints on your cheat sheet.',addContact:'+ Add contact',myNotes:'My notes',notesPh:'Equipment specifications, audiologist/ophthalmologist contact details, communication technique notes, alarm system measurements, evacuation plan details…',rules:'The 10 golden rules',keyNums:'Key measurements at a glance',delRow:'Remove',notCovered:'Topic not covered in this module? Check the cheat sheet, ask your health or accessibility professional, or request it via your SafeLife store page — new checks arrive in free updates.',printNote:'All checks are automatically expanded to full detail when printing — no need to open them first.',mn1:'Newborn',mn2:'Infant',mn3:'Toddler',mn4:'Preschooler',mn5:'School-Age',mn6:'Teenager',mn7:'Young Adult',mn8:'Adult',mn9:'Middle-Aged Adult',mn10:'Active Seniors',mn11:'Advanced Age',mn12:'90+ and Longevity',
+manualBody:'<h4>🚀 Getting started</h4><p>84 checks in 6 zones. Tap any check to see Who / What / Where / Why / How, exact measurements and standards, a real-world example and a quick-win tip.</p><h4>✅ Progress</h4><p>Tick the box to complete a check — bars and counters update instantly. Each zone has Mark All / Unmark All and Expand / Collapse All buttons, and the floating ↑ ↓ arrows jump between checks.</p><h4>🔍 Search &amp; filters</h4><p>The search box filters all 84 checks live across every zone. Tap a risk pill (Critical / High / Medium / Low) to filter by risk level; tap again to clear.</p><h4>🎨 Personalise</h4><p>Pick a colour theme and light or dark mode — remembered on this device. Make the cheat sheet yours: add your own emergency numbers and notes.</p><h4>💾 Save &amp; 🖨️ Print</h4><p>Progress saves automatically on this device as you go. To move your progress to another device or keep a backup, tap 💾 Save — this downloads a small file. On the new device (or after clearing your browser), open the same checklist, tap 📂 Load, and choose that file to restore your progress exactly where you left off. Keep the file somewhere safe, like your email or a notes app. Print the full checklist, one zone, or your personalised cheat sheet — all checks expand automatically when printing. Choose "Save as PDF" in the print dialog to create a PDF.</p>'}
+};
+
+// ═══════════════════════════════════════════
+// TRADEMARK ICON SET — same outline family as the whole collection
+// ═══════════════════════════════════════════
+const _svg = inner => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+const ICONS = {
+  stage: _svg('<path d="M2.3 8.6c1.7-2.7 4.2-4.1 6.2-4.1s4.5 1.4 6.2 4.1c-1.7 2.7-4.2 4.1-6.2 4.1S4 11.3 2.3 8.6z"/><circle cx="8.5" cy="8.6" r="1.8"/><path d="M14.5 14.6q1.8 1.8 0 3.8M16.7 12.4q3.6 3.6 0 8.2M18.9 10.2q5.4 5.4 0 12.6"/><circle cx="13" cy="16.6" r="1" fill="currentColor" stroke="none"/>'),
+  z1: _svg('<circle cx="12" cy="6.6" r="3"/><path d="M12 9.6v2M9 4l-1.3-1.6M15 4l1.3-1.6M6.6 6.6H4.8M19.2 6.6h-1.8"/><path d="M3 20.5h18"/><path d="M3.5 20.5v-3.6h5.4v3.6"/><path d="M3.5 17.6h5.4"/>'),
+  z2: _svg('<path d="M12 3.6c-.9 0-1.6.7-1.6 1.6v.6c-2.6.7-4.4 3-4.4 5.8v3.4l-1.6 2.4h15.2l-1.6-2.4v-3.4c0-2.8-1.8-5.1-4.4-5.8v-.6c0-.9-.7-1.6-1.6-1.6z"/><path d="M9.8 19.4a2.3 2.3 0 0 0 4.4 0"/><path d="M17.5 5.2l2.3-1.6M17.8 8.6h2.8"/>'),
+  z3: _svg('<circle cx="9" cy="14.5" r="5.3"/><circle cx="9" cy="14.5" r="1.6"/><path d="M9 9.2v1.2"/><circle cx="9" cy="8.3" r="0.9" fill="currentColor" stroke="none"/><path d="M15 9.5h5.5M15 12.5h5.5M15 15.5h3.2"/>'),
+  z4: _svg('<rect x="3.2" y="5" width="13" height="14" rx="2"/><path d="M6 10.2h7M6 13h7M6 15.8h4.4"/><path d="M18.6 8.2a4 4 0 0 1 0 7.6M21 6.4a7 7 0 0 1 0 11.2"/>'),
+  z5: _svg('<path d="M8 21l4.5-15.4"/><circle cx="13" cy="4.3" r="1.6"/><path d="M8.6 19.2l-2.4 1.3M6.8 15.4H4.4M7.6 12.2l-2-1.2"/><path d="M15 21h6"/>'),
+  z6: _svg('<circle cx="7.4" cy="6.6" r="2.4"/><path d="M3.4 19v-2.6a4 4 0 0 1 4-4h0a4 4 0 0 1 4 4V19"/><circle cx="16.8" cy="8.4" r="2"/><path d="M13.6 19v-2.2a3.2 3.2 0 0 1 3.2-3.2h0a3.2 3.2 0 0 1 3.2 3.2V19"/><path d="M17 3.4l.6 1.5 1.6.2-1.2 1.1.3 1.6-1.3-.8-1.3.8.3-1.6-1.2-1.1 1.6-.2z"/>'),
+  stages: [
+    _svg('<circle cx="12" cy="13" r="6.5"/><path d="M12 6.5c0-1.8.8-2.7 2.3-3"/><circle cx="9.7" cy="12.2" r="0.65" fill="currentColor" stroke="none"/><circle cx="14.3" cy="12.2" r="0.65" fill="currentColor" stroke="none"/><path d="M9.9 15c1.4 1.2 2.8 1.2 4.2 0"/>'),
+    _svg('<circle cx="12" cy="7" r="3.2"/><path d="M6.8 20.5v-3.2a5.2 5.2 0 0 1 10.4 0v3.2"/>'),
+    _svg('<path d="M12 3.5l2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/>'),
+    _svg('<rect x="6.5" y="8" width="11" height="12" rx="3"/><path d="M9.5 8V6.2a2.5 2.5 0 0 1 5 0V8"/><rect x="9.7" y="13" width="4.6" height="4" rx="1"/><path d="M6.5 11.5h11"/>'),
+    _svg('<path d="M5 15v-1.5a7 7 0 0 1 14 0V15"/><rect x="4" y="14" width="3.4" height="6" rx="1.6"/><rect x="16.6" y="14" width="3.4" height="6" rx="1.6"/>'),
+    _svg('<path d="M12 4.5L2.8 9l9.2 4.5L21.2 9z"/><path d="M6.8 11.5v3.8c0 1.6 10.4 1.6 10.4 0v-3.8"/><path d="M21.2 9v5"/>'),
+    _svg('<rect x="3.8" y="8" width="16.4" height="11.2" rx="2"/><path d="M9.5 8V6.6A1.6 1.6 0 0 1 11.1 5h1.8a1.6 1.6 0 0 1 1.6 1.6V8M3.8 12.8h16.4"/>'),
+    _svg('<path d="M8.5 9.5v-4c2.3 1.8 4.7 1.8 7 0v4a3.5 3.5 0 0 1-7 0z"/><path d="M12 13v8M12 18c-1.8-.4-3-1.4-3.6-3"/>'),
+    _svg('<circle cx="8.5" cy="5" r="2.1"/><path d="M8.5 7.1c-1.2.4-2 1.5-2 2.8v1.8"/><path d="M8.7 9.6c3.4 0 5.8 2.5 5.8 5.7 0 2.2-1.2 3.9-3 4.9"/><path d="M6.5 11.7v3.4c0 2.2 1 3.9 2.7 5"/>'),
+    _svg('<circle cx="12" cy="5.8" r="2.3"/><path d="M8.2 17.3a3.8 3.8 0 0 1 7.6 0v1.2"/><path d="M6.6 20.5h10.8"/><path d="M8.6 20.5v-3.2M15.4 20.5v-3.2"/><path d="M12 13.4c-.9-.8-1.5-1.3-1.5-1.9a.85.85 0 0 1 1.5-.55.85.85 0 0 1 1.5.55c0 .6-.6 1.1-1.5 1.9z"/>'),
+    _svg('<circle cx="7" cy="5.3" r="2.2"/><path d="M4 19v-3.4a3.4 3.4 0 0 1 3.4-3.4h.6a3.4 3.4 0 0 1 2.6 1.2l1 1.2"/><circle cx="17" cy="9.4" r="1.7"/><path d="M13.9 19v-2.4a2.6 2.6 0 0 1 2.6-2.6h1a2.6 2.6 0 0 1 2.6 2.6V19"/><path d="M9.5 15.3l2.7 1.4"/>'),
+    _svg('<path d="M6.4 8.1c-2.2 0-4 1.8-4 3.9s1.8 3.9 4 3.9c3.4 0 5.2-2.5 5.7-3.9.5-1.4 2.3-3.9 5.7-3.9 2.2 0 4 1.8 4 3.9s-1.8 3.9-4 3.9c-3.4 0-5.2-2.5-5.7-3.9-.5-1.4-2.3-3.9-5.6-3.9z"/>'),
+    _svg('<path d="M8.5 8.2V6.6a3.5 3.5 0 0 1 7 0v1.6"/><rect x="4.3" y="8.2" width="15.4" height="11.8" rx="3.6"/><path d="M4.3 13.2h15.4"/><rect x="10.4" y="10.6" width="3.2" height="2" rx="0.5"/>'),
+    _svg('<circle cx="7.8" cy="12" r="5.3"/><circle cx="16.2" cy="12" r="5.3"/><circle cx="6.3" cy="11.2" r="0.6" fill="currentColor" stroke="none"/><circle cx="9.3" cy="11.2" r="0.6" fill="currentColor" stroke="none"/><circle cx="14.7" cy="11.2" r="0.6" fill="currentColor" stroke="none"/><circle cx="17.7" cy="11.2" r="0.6" fill="currentColor" stroke="none"/><path d="M6.5 13.8c.9.7 1.8.7 2.7 0M14.9 13.8c.9.7 1.8.7 2.7 0"/>'),
+    _svg('<rect x="6" y="4.6" width="12" height="16.4" rx="2.2"/><path d="M9.4 4.6V3.7A1.7 1.7 0 0 1 11.1 2h1.8a1.7 1.7 0 0 1 1.7 1.7v.9"/><path d="M9 13.2l2.2 2.2L15.5 11"/>'),
+    _svg('<path d="M4 11.5l8-6.8 8 6.8"/><path d="M6.2 10.2V19a1 1 0 0 0 1 1h9.6a1 1 0 0 0 1-1v-8.8"/><path d="M9.4 19v-4.6h5.2V19"/><path d="M9 13l2.2 1.6 3.4-3"/>'),
+    _svg('<path d="M12 3v18"/><path d="M8 5h8"/><path d="M9.6 13h4.8"/>'),
+    _svg('<rect x="5" y="9.6" width="14" height="4.8" rx="2.4" transform="rotate(-38 12 12)"/><path d="M12 9.6v4.8" transform="rotate(-38 12 12)"/>'),
+    _svg('<circle cx="8.3" cy="15.5" r="5.1"/><circle cx="8.3" cy="15.5" r="0.9" fill="currentColor" stroke="none"/><path d="M8.3 15.5h7l2.7 3.6"/><path d="M8.3 10.6h4.8l1.7 4.9h3.5"/><circle cx="7.6" cy="5.6" r="1.7"/><path d="M7.6 7.3v2.2"/><circle cx="18.7" cy="19.3" r="1.3"/>'),
+    _svg('<path d="M2.3 8.6c1.7-2.7 4.2-4.1 6.2-4.1s4.5 1.4 6.2 4.1c-1.7 2.7-4.2 4.1-6.2 4.1S4 11.3 2.3 8.6z"/><circle cx="8.5" cy="8.6" r="1.8"/><path d="M14.5 14.6q1.8 1.8 0 3.8M16.7 12.4q3.6 3.6 0 8.2M18.9 10.2q5.4 5.4 0 12.6"/><circle cx="13" cy="16.6" r="1" fill="currentColor" stroke="none"/>')
+  ]
+};
+function injectIcons(){
+  document.getElementById('logo-icon').innerHTML = ICONS.stage;
+  document.getElementById('hero-icon').innerHTML = ICONS.stage;
+  document.querySelectorAll('.zic[data-zi]').forEach(el=>{ el.innerHTML = ICONS[el.dataset.zi] || ''; });
+}
+// ═══════════════════════════════════════════
+// ALL 84 CHECKS — VISUALLY & HEARING IMPAIRED HOUSEHOLD
+// ═══════════════════════════════════════════
+const ZONES = [
+  {
+    id: 1, name: 'Home Layout, Lighting & Trip-Hazard Safety', icon: '🦯',
+    desc: '14 checks: consistent furniture placement and decluttered pathways, high-contrast marking on steps and thresholds, even ambient and task lighting, removing loose rugs and securing cords, tactile flooring transitions, marking glass doors and furniture edges, and a consistent "home base" system for frequently used items.',
+    checks: [
+      { id:'ss01', num:'SS01', risk:'critical', title:'Consistent Furniture Placement, Never Rearranged Without Warning',
+        who:'Household members who are visually impaired and rely on a learned mental map of the home',
+        what:'Furniture, rugs or large objects moved or rearranged without telling the person in advance',
+        where:'Every room the person moves through independently, especially hallways and living areas',
+        why:'A visually impaired person builds a mental map of the home through repetition; an unannounced change turns a familiar route into a collision or fall hazard',
+        how:'Agree as a household that furniture stays in its place; if something must move, walk the person through the change by hand before they navigate it alone, and keep it in the new position afterward',
+        measurement:'Recognised orientation-and-mobility guidance for visually impaired individuals treats a stable, unchanged home layout as a core safety principle, not a preference.',
+        example:'A family moves a coffee table to make room for guests and forgets to mention it — a household member who is blind walks into it that evening. The household adopts a rule: nothing moves without a walk-through first.',
+        tip:'If a layout change is unavoidable, do the walk-through the same day it changes, not "sometime this week."' },
+
+      { id:'ss02', num:'SS02', risk:'critical', title:'Clear, Decluttered Pathways Throughout the Home',
+        who:'All household members, particularly anyone with reduced vision',
+        what:'Bags, shoes, toys, boxes or other items left on floors, stairs or in walkways',
+        where:'Hallways, stairways, entryways and the main paths between frequently used rooms',
+        why:'Objects on the floor are among the most common causes of falls for people who cannot see them clearly, and are far harder to detect by cane or residual vision than furniture that is expected to be in a fixed place',
+        how:'Do a daily walk-through of main pathways to clear anything left on the floor; establish a household habit of "nothing stays on the floor," and pair this with the home-base system (SS13) so items have a place to go',
+        measurement:'Recognised falls-prevention and accessible-design guidance identifies clear, unobstructed circulation paths as a baseline requirement, with a recommended minimum clear width along primary routes of approximately 900mm (35in).',
+        example:'A pair of shoes left at the bottom of the stairs causes a stumble; the household starts a "shoes go on the rack, not the floor" rule that everyone — including visiting guests — is asked to follow.',
+        tip:'Put a shoe rack or basket right inside the main entrance so there is never a reason for footwear to land on the floor.' },
+
+      { id:'ss03', num:'SS03', risk:'high', title:'Doors Left Fully Open or Fully Closed, Never Ajar',
+        who:'Anyone in the household who is visually impaired',
+        what:'Doors left partly open, at an angle across a walkway',
+        where:'Cupboard, cabinet, room and closet doors throughout the home',
+        why:'A half-open door is very difficult to detect by cane technique or peripheral vision and is a common cause of head and body collisions',
+        how:'Teach every household member — including children and visitors — the "fully open or fully closed" rule for every door and cabinet in the home',
+        measurement:'This is a well-established orientation-and-mobility principle taught in cane travel training for people who are blind or have low vision.',
+        example:'A cabinet door left ajar in the kitchen results in a bruised forehead; the household puts a small reminder note inside the cabinet door until the habit sticks.',
+        tip:'Self-closing hinges on cabinet doors remove the risk entirely if half-open doors are a recurring problem.' },
+
+      { id:'ss04', num:'SS04', risk:'high', title:'High-Contrast Marking on Stair Nosings and Step Edges',
+        who:'Household members with low vision who use stairs',
+        what:'Step edges without a visible contrast strip against the rest of the stair',
+        where:'Every internal and external staircase in the home',
+        why:'Low-vision individuals rely on contrast, not just light levels, to judge where one step ends and the next begins; uniform-coloured stairs make step edges very hard to detect',
+        how:'Apply a contrasting, slip-resistant strip along the leading edge of every step, in a colour that stands out clearly from the stair tread itself',
+        measurement:'Recognised accessible-design guidance recommends a contrast strip approximately 50–75mm (2–3in) wide along the full width of each step nosing, in a tone that contrasts strongly (light-on-dark or dark-on-light) with the surrounding surface.',
+        example:'A household paints the edge of each wooden stair with a light strip after a low-vision grandparent misjudges the top step; falls on that staircase stop entirely.',
+        tip:'Test the contrast in both daytime and evening lighting — a colour that looks distinct at noon can disappear under warm evening light.' },
+
+      { id:'ss05', num:'SS05', risk:'high', title:'Adequate, Even Lighting Throughout Living Areas',
+        who:'All household members, especially anyone with low vision',
+        what:'Dim, patchy or inconsistent lighting across rooms and hallways',
+        where:'Every regularly used room, hallway, stairway and entrance',
+        why:'Low-vision individuals generally need significantly more light than people with typical vision to see clearly and safely, and uneven lighting creates confusing shadow patterns',
+        how:'Install adequate ceiling or wall lighting in every room and hallway, replace dim or flickering bulbs promptly, and add supplementary lighting in areas that remain dim',
+        measurement:'Recognised low-vision environmental design guidance typically recommends substantially higher illumination for key living areas than standard residential lighting, with individual needs best assessed by a low-vision or occupational therapy professional.',
+        example:'A hallway lit by a single distant bulb is upgraded with an additional fixture partway along its length after a household member repeatedly misjudges the location of a side table.',
+        tip:'Walk through the home at dusk, before switching any lights on, to spot the areas that go dark first — those need the most attention.' },
+
+      { id:'ss06', num:'SS06', risk:'medium', title:'Task Lighting at Key Activity Areas',
+        who:'Household members who are visually impaired, especially while doing detailed or precise tasks',
+        what:'General room lighting that is adequate for moving around but too weak for close tasks such as reading, cooking or handling medication',
+        where:'Reading chairs, kitchen counters, medication-preparation areas and workspaces',
+        why:'Close tasks that involve fine detail require more concentrated, glare-free light than general ambient lighting can usually provide',
+        how:'Add a dedicated, adjustable task light at each key activity area, positioned to avoid casting the user\'s own shadow over the task',
+        measurement:'Recognised low-vision guidance recommends supplementary, adjustable task lighting for close work, positioned to reduce glare and shadow rather than relying on ambient room light alone.',
+        example:'A reading lamp is added beside an armchair after a household member struggles to read medication labels under the room\'s overhead light alone.',
+        tip:'Position task lighting to come from the side rather than directly overhead — this reduces shadows cast by the user\'s own hands.' },
+
+      { id:'ss07', num:'SS07', risk:'medium', title:'Elimination of Glare, Shadows and Uneven Lighting Transitions',
+        who:'Household members with low vision, who are often more sensitive to glare than people with typical vision',
+        what:'Bright glare from windows or bare bulbs, and abrupt light-to-dark transitions between rooms',
+        where:'Rooms with large windows, glossy floors or bare light fixtures, and doorways between brightly and dimly lit spaces',
+        why:'Glare can temporarily wash out usable vision, and a sudden change in light level between rooms can leave a person effectively unable to see for several seconds while their eyes adjust',
+        how:'Use blinds, curtains or diffusing shades to control direct sunlight and bare-bulb glare, choose matte rather than glossy flooring and surfaces where possible, and even out lighting levels between adjoining rooms',
+        measurement:'Recognised low-vision environmental design guidance identifies glare control and gradual light transitions as core principles, alongside overall illumination levels.',
+        example:'Glossy kitchen flooring is replaced with a matte finish after a household member reports being "blinded" by reflected light from the window each afternoon.',
+        tip:'Sheer curtains often solve glare problems better than blinds because they diffuse light rather than blocking it in stripes.' },
+
+      { id:'ss08', num:'SS08', risk:'critical', title:'Loose Rugs, Mats and Runners Removed or Secured',
+        who:'All household members, especially anyone with reduced vision or hearing who relies more on stable footing',
+        what:'Rugs, mats or runners that can slip, bunch, or curl at the edges',
+        where:'Entryways, hallways, in front of sinks and beside beds',
+        why:'Loose floor coverings are one of the most common and preventable causes of trip and slip falls in any home, and are especially hazardous when they cannot be seen clearly',
+        how:'Remove loose rugs where possible; where a rug is needed, secure it fully to the floor with non-slip backing or double-sided tape along all edges',
+        measurement:'Recognised falls-prevention guidance consistently identifies unsecured floor coverings as a leading, preventable home hazard.',
+        example:'A hallway runner that had started to curl at one corner is either removed or refitted with a non-slip underlay after a near-fall.',
+        tip:'If a rug won\'t lie completely flat even after securing, it is safer to remove it than to keep adjusting it.' },
+
+      { id:'ss09', num:'SS09', risk:'high', title:'Cords and Cables Secured Away from Walkways',
+        who:'All household members, particularly anyone who cannot see a cord lying across the floor',
+        what:'Electrical, charging, or appliance cords running across walkways or trailing loosely',
+        where:'Living rooms, bedrooms, offices and any area with electronics or lamps',
+        why:'A cord across a walkway is very difficult to detect by cane technique or reduced vision and can cause a fall for the person and anyone else in the home',
+        how:'Route cords along walls using cord clips or channels, and never run a cord directly across a path that is regularly walked',
+        measurement:'Recognised home-safety and falls-prevention guidance identifies loose cords across walkways as a preventable trip hazard requiring routing or securing along walls.',
+        example:'A phone charger cord that used to stretch across a bedroom doorway is rerouted along the skirting board with cord clips.',
+        tip:'Keep a small supply of cord clips or a cord channel on hand so a new appliance never ends up with its cord crossing a path "just for now."' },
+
+      { id:'ss10', num:'SS10', risk:'medium', title:'Tactile Flooring Transitions Between Rooms or Surfaces',
+        who:'Household members who are visually impaired and use floor-surface changes to orient themselves',
+        what:'Flooring transitions between rooms (carpet to tile, tile to wood) that are inconsistent or create an unexpected step or ridge',
+        where:'Doorways and thresholds between rooms with different flooring materials',
+        why:'A detectable, consistent change in floor texture at key thresholds (such as a kitchen or bathroom entrance) can serve as a helpful orientation cue, while an unexpected raised threshold becomes a trip hazard',
+        how:'Where flooring changes, keep the transition flush and smooth wherever possible; where a slightly raised threshold is unavoidable, mark it clearly and keep it consistent so it becomes a reliable, expected cue rather than a surprise',
+        measurement:'Recognised accessible-design guidance recommends flush thresholds wherever possible, with any unavoidable height change kept minimal (generally no more than approximately 13mm/0.5in) and clearly marked.',
+        example:'A worn, slightly lifted threshold strip between the hallway and kitchen is replaced with a flush transition after it catches a household member\'s foot.',
+        tip:'A consistent, gentle texture change (like carpet to hard flooring) at a bathroom doorway can actually help a visually impaired person know they\'ve arrived — keep it consistent throughout the home rather than removing it.' },
+
+      { id:'ss11', num:'SS11', risk:'high', title:'Glass Doors and Large Glass Panels Marked at Eye Level',
+        who:'Household members with low vision and any visitor unfamiliar with the home',
+        what:'Full-height glass doors, panels or sliding doors without any visible marking',
+        where:'Patio doors, glass internal doors, and large windows near floor level',
+        why:'Clear glass without a visible marker is essentially invisible and a well-documented cause of serious collision injury, particularly for people with reduced vision',
+        how:'Apply a clearly visible marking (a coloured strip, decal pattern, or frosted band) across the glass at a height that is visible to both standing and seated household members',
+        measurement:'Recognised accessible-design guidance recommends manifestation markings at two heights, approximately 850–1000mm (33–39in) and 1400–1600mm (55–63in) from the floor, wide and continuous enough to remain visible against varying backgrounds.',
+        example:'A sliding glass patio door gets a horizontal band of frosted decal stickers after a household member walks into it while it was fully closed but appeared open.',
+        tip:'A single small sticker in one corner is not enough — the marking needs to span the width of the glass to be reliably seen.' },
+
+      { id:'ss12', num:'SS12', risk:'medium', title:'Sharp or Protruding Furniture Edges Cushioned or Marked',
+        who:'All household members, particularly anyone with reduced vision who may misjudge the location of furniture',
+        what:'Sharp corners on tables, countertops, and low furniture that protrude into walkways',
+        where:'Coffee tables, kitchen counters, low shelving units and furniture positioned near frequently used paths',
+        why:'A misjudged distance to a sharp corner can cause a significant injury, and furniture edges are one of the most common sources of household collision injury',
+        how:'Add corner guards or cushioning to sharp furniture edges near walkways, and where possible position furniture with rounded corners in high-traffic areas',
+        measurement:'Recognised home-safety guidance recommends edge protection on furniture corners that project into walkways, particularly where a household member has reduced vision.',
+        example:'A glass-cornered coffee table is repositioned away from the main walking path and fitted with corner guards after a minor collision.',
+        tip:'Run a hand along furniture edges near main pathways at the height of a typical hip or knee — anything sharp at that height is a priority to pad.' },
+
+      { id:'ss13', num:'SS13', risk:'high', title:'Consistent "Home Base" Organisation for Frequently Used Items',
+        who:'Household members who are visually impaired and rely on memory rather than visual scanning to find items',
+        what:'Frequently used items (keys, phone, medication, glasses, hearing aids, wallet) without one single, consistent storage location',
+        where:'A dedicated spot near the main entrance or in the bedroom for daily essentials',
+        why:'A consistent "home base" means the person can find essential items by memory and touch alone, without needing to visually search or ask for help',
+        how:'Choose one fixed location for each frequently used item, and ask every household member to always return items there — never "just for now" on a different surface',
+        measurement:'Recognised guidance for visual accessibility identifies consistent, predictable storage locations as a core independence-supporting strategy for people with low vision or blindness.',
+        example:'A small tray by the front door becomes the fixed home for keys, wallet and phone; misplaced-item searches drop sharply once every household member commits to using it.',
+        tip:'Use a tray, hook, or small basket rather than an open surface — a defined container is easier to find by touch than "somewhere on the table."' },
+
+      { id:'ss14', num:'SS14', risk:'medium', title:'Continuous Handrails with Contrast Colour on Both Sides of Stairs',
+        who:'Household members with low vision or reduced balance who use stairs',
+        what:'A handrail on only one side, a handrail that stops partway, or a handrail that blends visually into the wall',
+        where:'Every staircase used regularly, indoors and outdoors',
+        why:'A continuous handrail on both sides gives a stable point of contact for the full length of the stairs, and a rail that contrasts with the wall is far easier to locate visually',
+        how:'Install a continuous, securely mounted handrail on both sides of the staircase, in a colour or finish that contrasts clearly with the surrounding wall',
+        measurement:'Recognised accessible-design guidance recommends continuous handrails on both sides of a staircase, mounted at approximately 900mm (35in) from the stair nosing, extending the full length of the flight.',
+        example:'A handrail that stopped short of the bottom step is extended to the full run of stairs after a household member lost their point of contact right at the last, most dangerous step.',
+        tip:'If only one handrail is possible for now, prioritise the side of the stairs the person uses most, and treat the second rail as a near-term upgrade, not optional.' }
+    ]
+  },
+  {
+    id: 2, name: 'Alarms, Alerts & Emergency Notification', icon: '🚨',
+    desc: '14 checks: visual (strobe) smoke and carbon monoxide alarms, vibrating alarm and bed-shaker devices, flashing doorbell and phone-alert systems, making sure alerts reach every sense together, backup power for alert systems, regular testing, and a written or visual emergency action plan.',
+    checks: [
+      { id:'ss15', num:'SS15', risk:'critical', title:'Visual (Strobe) Smoke Alarms Installed and Working',
+        who:'Household members who are deaf or hard of hearing',
+        what:'Smoke alarms that only emit an audible tone, with no visual strobe component',
+        where:'Every bedroom, hallway outside sleeping areas, and each level of the home',
+        why:'A person who cannot hear a standard smoke alarm receives no warning at all during a fire unless a visual signal is present',
+        how:'Install combination audible/visual smoke alarms, or add a compatible strobe unit linked to existing smoke alarms, in every bedroom and hallway',
+        measurement:'Recognised fire-safety guidance for people who are deaf or hard of hearing recommends visual strobe smoke alarms with sufficient light intensity to wake a sleeping person, positioned within direct line of sight of the bed.',
+        example:'A household adds a strobe smoke alarm mounted on the wall facing the bed after learning their existing audible-only alarm would not wake a family member who is profoundly deaf.',
+        tip:'Position the strobe unit where it will flash directly into the sleeping area, not just somewhere in the room.' },
+
+      { id:'ss16', num:'SS16', risk:'critical', title:'Visual (Strobe) Carbon Monoxide Alarms Installed Separately from Smoke Alarms',
+        who:'Household members who are deaf or hard of hearing',
+        what:'A single combined alarm relied on for both smoke and carbon monoxide, or a carbon monoxide alarm with no visual alert',
+        where:'Near sleeping areas and any room with a fuel-burning appliance',
+        why:'Carbon monoxide is colourless and odourless, so a working visual alert is the only way a deaf or hard-of-hearing person can be warned of a leak, and distinguishing the two hazards can affect the correct emergency response',
+        how:'Install a dedicated carbon monoxide alarm with its own visual strobe signal, separate from or clearly distinguishable from the smoke alarm signal',
+        measurement:'WHO guidance on indoor air quality and carbon monoxide identifies detection and early warning as essential to preventing carbon monoxide poisoning; recognised accessibility guidance extends this to visual alerting for people who are deaf or hard of hearing.',
+        example:'A household with a gas water heater adds a carbon monoxide alarm with a distinct flash pattern from the smoke alarm, so the visual signal alone tells them which hazard is present.',
+        tip:'Ask whether the alarm\'s flash pattern differs between smoke and carbon monoxide warnings — knowing which hazard is present changes the correct response.' },
+
+      { id:'ss17', num:'SS17', risk:'critical', title:'Vibrating Bed-Shaker or Under-Pillow Alarm Device for Sleep Hours',
+        who:'Household members who are deaf or hard of hearing, particularly during sleep when hearing aids are typically removed',
+        what:'No physical/vibrating alert connected to the smoke and carbon monoxide alarm system for use during sleep',
+        where:'Under the mattress or pillow in every bedroom used by a deaf or hard-of-hearing household member',
+        why:'Hearing aids and cochlear implant processors are usually removed overnight, so a visual strobe alone may not wake a deeply sleeping person — a vibrating device provides a physical wake signal',
+        how:'Connect a compatible bed-shaker or vibrating pad to the home\'s alarm system, test it regularly, and keep it in place under the mattress or pillow every night',
+        measurement:'Recognised fire-safety guidance for deaf and hard-of-hearing individuals identifies a vibrating alert device as the most reliable way to achieve a wake response during sleep, when visual and hearing-aid-based alerts may not be received.',
+        example:'A teenager who is deaf sleeps through a strobe-only test but wakes immediately once a bed-shaker device is added and tested.',
+        tip:'Test the bed-shaker with the person actually asleep (during a planned daytime nap, not the middle of the night) to confirm it reliably wakes them.' },
+
+      { id:'ss18', num:'SS18', risk:'high', title:'Flashing/Strobe Doorbell and Visitor Alert System',
+        who:'Household members who are deaf or hard of hearing',
+        what:'A standard audible-only doorbell with no visual signal',
+        where:'Main entrance and any secondary entrance used regularly',
+        why:'Missing visitors, deliveries, or emergency responders at the door can create both practical and safety difficulties',
+        how:'Install a doorbell system that triggers a flashing light or a notification to a phone or smart device when the doorbell is pressed',
+        measurement:'Recognised guidance for hearing accessibility identifies visual or vibrating doorbell alerting as a standard, well-established accommodation.',
+        example:'A flashing-light doorbell receiver mounted in the main living area replaces reliance on a household member happening to notice movement outside.',
+        tip:'Choose a system with a distinct flash pattern from the smoke alarm so the person can tell at a glance which alert is which.' },
+
+      { id:'ss19', num:'SS19', risk:'high', title:'Flashing or Vibrating Phone and Device Alert Settings Enabled',
+        who:'Household members who are deaf or hard of hearing',
+        what:'Phones, tablets and other devices left on default audio-only alert settings',
+        where:'Wherever the person\'s primary communication device is kept',
+        why:'Missed calls, texts, and app-based emergency alerts can leave the person unreachable in a genuine emergency',
+        how:'Enable visual flash and vibration alert settings on all personal devices, and test that alerts are noticeable wherever the device is typically kept (in a pocket, on a table, charging overnight)',
+        measurement:'Recognised guidance for hearing accessibility recommends enabling all available visual and vibration alert features on personal devices, tested under real conditions rather than assumed to work.',
+        example:'A phone set to vibrate-only goes unnoticed while charging in another room overnight; the household adds a flashing accessory light triggered by the phone\'s notifications.',
+        tip:'Test alert settings with the device in its actual overnight location, not just in the person\'s hand during the day.' },
+
+      { id:'ss20', num:'SS20', risk:'critical', title:'Alerts Reach More Than One Sense at Once',
+        who:'The whole household, but especially any member who is deaf, hard of hearing, blind, or has low vision',
+        what:'Any single emergency alert (smoke, carbon monoxide, doorbell, medical) that relies on only one sense to be received',
+        where:'Every alert and alarm system in the home',
+        why:'A household with both visual and hearing impairment present may not reliably receive an alert through only sound or only light — genuine coverage means every critical alert reaches at least two senses',
+        how:'Review every alarm and alert system in the home and confirm each one provides at least two of: sound, visual flash, and vibration, suited to the specific household members present',
+        measurement:'Recognised guidance for sensory accessibility identifies multi-modal alerting (covering more than one sense) as the standard for genuinely accessible emergency notification.',
+        example:'A household audits every alarm in the home and finds the carbon monoxide alarm has sound only — it is replaced with a combination sound, strobe and vibration-compatible unit.',
+        tip:'Walk through a "what would I actually notice" test for each alarm from every household member\'s perspective, not just whether the alarm technically has multiple features.' },
+
+      { id:'ss21', num:'SS21', risk:'high', title:'Interconnected Alarm System Across the Whole Home',
+        who:'The whole household',
+        what:'Standalone alarms that only sound or flash in the room where they are triggered',
+        where:'Every smoke and carbon monoxide alarm in the home',
+        why:'A fire starting in one room needs to be detected throughout the home immediately, especially by a household member who may not perceive an alarm from a distant room',
+        how:'Install an interconnected alarm system so that when one unit is triggered, all units — including visual and vibrating alerts — activate throughout the home',
+        measurement:'Recognised fire-safety guidance recommends interconnected alarm systems so that a signal anywhere in the home is received everywhere, particularly important where household members have sensory impairments.',
+        example:'A standalone kitchen smoke alarm is replaced with an interconnected system after a household member in an upstairs bedroom did not receive any signal during a false alarm downstairs.',
+        tip:'When replacing or adding any single alarm, check it is compatible with the rest of the interconnected system before buying.' },
+
+      { id:'ss22', num:'SS22', risk:'critical', title:'Backup Power Source for All Alert and Alarm Systems',
+        who:'The whole household, particularly anyone relying on visual or vibrating alerts',
+        what:'Alarm and alert systems that rely solely on mains power with no working battery backup',
+        where:'Every alarm, strobe unit, and vibrating alert device in the home',
+        why:'A power outage should never mean a household loses its only means of receiving an emergency warning, especially where visual alerts depend on constant power',
+        how:'Confirm every alarm and alert device has a working battery backup, check and replace batteries on a fixed schedule, and keep spare batteries on hand',
+        measurement:'Recognised fire-safety guidance recommends battery backup for all alarm systems with a fixed testing and replacement schedule, commonly checked monthly with batteries replaced at least annually or per manufacturer guidance.',
+        example:'A household discovers during a storm-related power outage that their strobe alarm has no battery backup and adds a battery-powered unit as a supplement.',
+        tip:'Write the battery replacement date somewhere visible (a sticker on the unit itself works well) so it is never forgotten.' },
+
+      { id:'ss23', num:'SS23', risk:'medium', title:'Regular Testing Schedule for All Alarms and Alert Devices',
+        who:'The whole household',
+        what:'Alarms and alert devices that are installed but never actually tested after initial setup',
+        where:'Every alarm, doorbell alert, and vibrating device in the home',
+        why:'A device that fails silently provides false confidence — regular testing is the only way to know an alert system will actually work when needed',
+        how:'Set a fixed monthly reminder to test every alarm and alert device in the home, including strobe units and bed-shakers, and confirm every household member can recognise a genuine alert during the test',
+        measurement:'Recognised fire-safety guidance recommends testing smoke and carbon monoxide alarms at least monthly, with visual and vibrating alert devices tested on the same schedule.',
+        example:'A monthly "first Sunday" household routine is established to test every alarm together, including waking the household member who uses the bed-shaker so they can confirm it worked.',
+        tip:'Test alerts at a time the person is actually likely to be asleep or without hearing aids in, not just during the day when they are already alert.' },
+
+      { id:'ss24', num:'SS24', risk:'high', title:'Written and Visual Emergency Action Plan Posted and Reviewed',
+        who:'The whole household',
+        what:'No clear, accessible plan for what to do when any alarm activates',
+        where:'A visible, accessible location such as near the main exit or on the refrigerator',
+        why:'In the stress of an actual emergency, a rehearsed and clearly posted plan is far more reliable than relying on memory alone, especially for a household member who may not receive every alert the same way as others',
+        how:'Create a simple written and visual (large-print, high-contrast, and/or pictured) emergency action plan covering what each alarm sound or signal means and the exact response, and review it together regularly',
+        measurement:'Recognised emergency-preparedness guidance recommends a written, rehearsed emergency plan specific to household members\' sensory and mobility needs, reviewed at regular intervals.',
+        example:'A large-print card by the front door lists each alarm type, what its signal looks or feels like, and the exact evacuation step to take.',
+        tip:'Practise the plan for real at least once, not just talk through it — walking the actual route reveals problems a conversation misses.' },
+
+      { id:'ss25', num:'SS25', risk:'medium', title:'Severe Weather and Community Emergency Alerts in an Accessible Format',
+        who:'The whole household',
+        what:'Community and weather emergency alerts that are broadcast only through audio channels',
+        where:'Wherever the household receives news and community alerts',
+        why:'Severe weather and community emergency notifications are just as important as in-home alarms, and need to be received through an accessible channel',
+        how:'Set up text-based, app-based, or visual community and weather alert notifications in addition to any audio broadcasts',
+        measurement:'Recognised guidance for accessible emergency communication recommends multiple, redundant notification channels including text and visual formats for community-wide alerts.',
+        example:'A household enables text-based severe weather alerts on their phones after realising their only prior source was a radio broadcast that a deaf household member could not access.',
+        tip:'Test that alert notifications actually arrive and are noticeable — some services default to a quiet notification setting that needs to be changed.' },
+
+      { id:'ss26', num:'SS26', risk:'medium', title:'Medical Alert or Panic Button System Suited to the Person\'s Needs',
+        who:'Any household member for whom a medical alert or panic button system would add safety, particularly if living with additional health conditions',
+        what:'A medical alert system chosen without considering whether its alert method (usually audio) suits the person\'s sensory needs',
+        where:'Wherever the person spends most time alone in the home',
+        why:'A medical alert system that the person cannot hear or clearly understand does not actually provide the safety it is meant to',
+        how:'If a medical alert or panic button system is used, confirm its confirmation signals and any two-way communication features are accessible to the person\'s specific needs before relying on it',
+        measurement:'Recognised guidance for accessibility in assistive technology recommends verifying that alert and confirmation signals from any personal safety device are accessible to the individual user\'s sensory needs, not assumed compatible.',
+        example:'A panic-button pendant that relies on a spoken confirmation tone is swapped for one with a visible light confirmation after the household realises the tone alone would not be noticed.',
+        tip:'Test the full sequence of the device — pressing it, waiting for confirmation, and any follow-up call — exactly as it would happen in a real emergency.' },
+
+      { id:'ss27', num:'SS27', risk:'medium', title:'Alarm and Alert Devices Compatible with Hearing Aids or Cochlear Implants',
+        who:'Household members who use hearing aids or cochlear implants',
+        what:'Alert devices or phone systems that are not checked for compatibility with the person\'s specific hearing device',
+        where:'Wherever alarms, doorbells or phone alerts connect to or interact with hearing devices',
+        why:'Some hearing aids and cochlear implant processors support direct streaming or telecoil connection to alert systems, which can significantly improve how clearly and reliably a signal is received',
+        how:'Ask the person\'s audiologist or hearing-device provider whether their specific device supports direct connection to home alert systems, and set this up if available',
+        measurement:'Recognised guidance for hearing accessibility technology notes that compatibility varies by hearing device model, and recommends confirming options directly with the individual\'s audiologist or device provider.',
+        example:'A household learns their family member\'s hearing aids support direct streaming and connects the doorbell alert to stream a distinct tone directly to the devices when worn.',
+        tip:'Compatibility only helps while hearing devices are worn — always pair it with a non-hearing-device-dependent alert like a strobe or vibration for times the devices are off.' },
+
+      { id:'ss28', num:'SS28', risk:'low', title:'A Second Household Member or Contact Automatically Notified in an Emergency',
+        who:'The whole household',
+        what:'An emergency alert system with no way to automatically notify a second person if the primary household member does not respond',
+        where:'Applies to smart alarm systems, medical alert devices, and any connected emergency notification system in use',
+        why:'An automatic secondary notification adds a layer of safety if the person is unable to respond to or act on an alert themselves',
+        how:'Where the home\'s alarm or medical alert system supports it, set up automatic notification to a second household member, neighbour, or emergency contact',
+        measurement:'Recognised guidance for personal safety technology identifies automatic secondary notification as a valuable added layer, particularly for individuals who live alone for parts of the day.',
+        example:'A smart smoke alarm system is configured to send a text alert to a family member\'s phone whenever it activates, in addition to sounding and flashing in the home.',
+        tip:'Choose a secondary contact who is realistically likely to be reachable and able to respond quickly, not just the first name that comes to mind.' }
+    ]
+  },
+  {
+    id: 3, name: 'Kitchen & Appliance Safety', icon: '🍳',
+    desc: '14 checks: tactile markers on oven and stove dials, high-contrast or talking timers, large-print, braille or tactile labelling for food and medication, safe stovetop adaptations, appliance auto-shutoff features, consistent organised storage, and safe knife and sharp-object handling adaptations.',
+    checks: [
+      { id:'ss29', num:'SS29', risk:'high', title:'Tactile Markers on Oven and Stove Dials',
+        who:'Household members who are blind or have low vision',
+        what:'Smooth, unmarked dials on ovens, stoves and other appliances with no way to identify settings by touch',
+        where:'The oven, stovetop, and any dial-controlled kitchen appliance',
+        why:'Without a visible or tactile reference point, a person cannot reliably identify or return a dial to a known safe setting by touch alone',
+        how:'Add raised tactile markers (bump dots or notches) at key reference points on each dial — such as "off," a common low setting, and a common high setting',
+        measurement:'Recognised guidance for visual accessibility in the kitchen recommends tactile marking of appliance controls at consistent reference points, using raised, durable markers safe for repeated heat exposure.',
+        example:'Raised silicone bump dots are added at the "off" and "medium" positions on the stove dials, letting a household member confirm the burner is off by touch alone.',
+        tip:'Use heat-safe marking materials rated for stovetop use — regular stickers or dots can melt or lose their raised texture near heat.' },
+
+      { id:'ss30', num:'SS30', risk:'medium', title:'High-Contrast or Talking Timers Used for Cooking',
+        who:'Household members who are blind, have low vision, or are hard of hearing',
+        what:'Kitchen timers with small, low-contrast displays or a quiet audible-only alert',
+        where:'Wherever cooking or food preparation takes place',
+        why:'A timer that cannot be read or heard defeats its purpose and increases the risk of burnt food, fire hazards, or missed medication timing tied to meals',
+        how:'Use a timer with large, high-contrast numbers, a talking/voice announcement feature, or a strong vibrating alert, matched to the person\'s specific needs',
+        measurement:'Recognised guidance for visual and hearing accessibility identifies large-print, high-contrast, talking, and vibrating timers as standard accessible kitchen tools.',
+        example:'A standard digital timer with a faint beep is replaced with a talking timer that announces the remaining time aloud.',
+        tip:'If the household includes both visual and hearing impairment, choose a timer that offers a strong vibration option alongside sound or voice.' },
+
+      { id:'ss31', num:'SS31', risk:'high', title:'Large-Print, Braille or Tactile Labelling for Food Items',
+        who:'Household members who are blind or have low vision',
+        what:'Packaged and stored food with no way to distinguish contents without opening or tasting',
+        where:'Pantry shelves, refrigerator, freezer and cupboards',
+        why:'Misidentifying food items can lead to consuming spoiled or unintended food, and creates ongoing daily frustration and dependence on others',
+        how:'Label food containers with large print, braille, or tactile markers (such as different-shaped rubber bands or raised stickers) using a consistent labelling system throughout the kitchen',
+        measurement:'Recognised guidance for visual accessibility recommends a consistent tactile or braille labelling system for food storage, decided together with the household member who will use it.',
+        example:'Canned goods are labelled with different textured stickers by category (vegetables, soups, fruit) after repeated mix-ups when items were unlabelled.',
+        tip:'Involve the person who will use the labels in choosing the system — a system imposed by someone else is far less likely to be used consistently.' },
+
+      { id:'ss32', num:'SS32', risk:'critical', title:'Large-Print, Braille or Tactile Labelling for Medication',
+        who:'Household members who are blind or have low vision who manage their own medication',
+        what:'Medication in original packaging or containers that look and feel similar to each other',
+        where:'Wherever medication is stored and taken, including bathroom cabinets, kitchen shelves, and travel containers',
+        why:'Misidentifying medication carries a serious and immediate risk of taking the wrong dose or the wrong medication entirely',
+        how:'Use large-print, braille, or tactile labelling systems specifically for medication, and where possible use differently shaped or textured containers for different medications',
+        measurement:'WHO guidance on medication safety identifies clear identification of medication as a core patient-safety principle; recognised guidance for visual accessibility extends this to tactile and braille labelling for people who are blind or have low vision.',
+        example:'A household member\'s medications are organised into a weekly tactile pill organiser with braille day labels after a near-miss with two similarly shaped bottles.',
+        tip:'Never rely on memory alone to distinguish medications by shape or position — always use a labelling system that does not depend on someone else moving things exactly the same way every time.' },
+
+      { id:'ss33', num:'SS33', risk:'critical', title:'Safe Stovetop Use Adaptations to Prevent Burns',
+        who:'Household members who are blind or have low vision who cook independently',
+        what:'Stovetop use without adaptations to judge burner location, heat level, or whether a burner is still on',
+        where:'The stovetop and immediate surrounding counter area',
+        why:'Burns from stovetops are a leading kitchen injury risk, and judging burner position, heat, and status by sight is not possible for someone with significant vision loss',
+        how:'Use consistent burner positions (always cook on the same burner for the same task where possible), tactile or auditory indicators for "on" status, and heat-resistant oven mitts and reaching tools; consider an induction cooktop, which stays cooler to the touch, where a full replacement is being considered',
+        measurement:'Recognised guidance for kitchen accessibility for visually impaired individuals recommends consistent burner use patterns, tactile or auditory "on" indicators, and appropriate protective equipment as standard burn-prevention adaptations.',
+        example:'A household member adopts a rule of always using the front-left burner for simmering and the back-right for boiling, so burner location becomes a matter of habit rather than searching.',
+        tip:'An indicator light or auditory chime confirming a burner is on (many modern stoves include this) is worth checking for and using consistently if the appliance has it.' },
+
+      { id:'ss34', num:'SS34', risk:'high', title:'Appliance Auto-Shutoff Features Enabled and Working',
+        who:'All household members',
+        what:'Appliances with an available auto-shutoff feature that is not enabled, or an appliance replaced with one that lacks the feature',
+        where:'Stovetops, ovens, irons, and other heat-producing appliances',
+        why:'An appliance left on accidentally is a fire risk for any household, and auto-shutoff provides an important safety backup when a person cannot visually confirm an appliance has been switched off',
+        how:'When purchasing or replacing kitchen appliances, prioritise models with an automatic shutoff feature, and confirm the feature is enabled and working on existing appliances',
+        measurement:'Recognised home-fire-safety guidance identifies auto-shutoff features as a valuable preventive measure, particularly for households with members who have sensory or cognitive impairments affecting appliance monitoring.',
+        example:'A new iron with an automatic shutoff after a period of inactivity replaces an older model with no such feature, following a scare when an iron was left plugged in.',
+        tip:'Test the auto-shutoff feature on a new appliance once during setup so you know exactly how long it takes and what signal (if any) it gives.' },
+
+      { id:'ss35', num:'SS35', risk:'medium', title:'Consistent, Organised Storage for Kitchen Items',
+        who:'Household members who are blind or have low vision',
+        what:'Kitchen items stored inconsistently or moved around during general tidying',
+        where:'Cupboards, drawers, and countertop storage throughout the kitchen',
+        why:'Consistent storage locations let a person find items reliably by memory and touch, supporting independent cooking and food preparation',
+        how:'Assign a fixed location for every regularly used kitchen item, and ask all household members to return items to that location after use',
+        measurement:'Recognised guidance for visual accessibility identifies consistent, predictable storage as a core independence-supporting principle in the kitchen, matching the household\'s broader "home base" approach.',
+        example:'Cooking utensils are sorted into labelled drawer sections that stay fixed, ending the frustration of searching for a specific tool after someone else put it away differently.',
+        tip:'When a new item is added to the kitchen, decide its permanent home immediately rather than "wherever there\'s space" on the day it arrives.' },
+
+      { id:'ss36', num:'SS36', risk:'high', title:'Safe Knife and Sharp-Object Handling Adaptations',
+        who:'Household members who are blind or have low vision who handle knives or sharp tools',
+        what:'Knife handling and storage without adaptations to judge blade position or edge direction by touch',
+        where:'Food preparation areas and knife storage locations',
+        why:'Judging a blade\'s position and orientation is a significant safety concern without reliable visual feedback, and unsafe storage adds risk for the whole household',
+        how:'Use cutting techniques taught for reduced vision (such as the "claw grip" to protect fingers and a consistent, felt-for cutting board edge), consider textured or bump-dot markers on knife handles to identify blade type, and always store knives blade-down or sheathed in a fixed, consistent location',
+        measurement:'Recognised guidance for kitchen accessibility for visually impaired individuals recommends specific hand-positioning techniques, consistent storage orientation, and tactile identification for safe knife handling.',
+        example:'A household member learns the claw-grip cutting technique from an occupational therapist and marks their most-used knife handle with a small tactile dot to identify it quickly by touch.',
+        tip:'A cutting board with a raised edge or non-slip grip gives a reliable tactile reference point for where the working surface ends.' },
+
+      { id:'ss37', num:'SS37', risk:'medium', title:'Contrast Between Countertops, Cabinets and Floor',
+        who:'Household members with low vision',
+        what:'Countertops, cabinets, and flooring in similar tones with no visual distinction between surfaces',
+        where:'Throughout the kitchen, particularly at counter edges and cabinet fronts',
+        why:'Strong visual contrast between surfaces helps a person with low vision judge edges, depth, and the boundary between counter and floor',
+        how:'Where kitchen surfaces are being chosen or updated, select contrasting tones between countertops, cabinetry, and flooring rather than matching or blending colours',
+        measurement:'Recognised low-vision environmental design guidance recommends strong tonal contrast between adjoining surfaces to aid depth perception and edge detection.',
+        example:'A light-coloured countertop edge stands out clearly against darker cabinet fronts, helping a household member judge the counter\'s edge without needing to feel for it every time.',
+        tip:'If a full renovation isn\'t practical, a contrasting strip of tape or trim along a counter edge can achieve a similar effect at a fraction of the cost.' },
+
+      { id:'ss38', num:'SS38', risk:'high', title:'Checking Food Temperature and Doneness Without Relying on Sight Alone',
+        who:'Household members who are blind or have low vision who cook independently',
+        what:'Judging whether food is cooked, boiling, or dangerously hot based on visual cues alone',
+        where:'Wherever food is being cooked, reheated, or served',
+        why:'Relying on sight to judge food temperature or doneness is not possible for someone with significant vision loss, and increases both burn risk and food-safety risk',
+        how:'Use a talking or tactile food thermometer to confirm safe cooking and serving temperatures, and use touch, smell, and sound (such as the sound of boiling) as reliable non-visual cues alongside it',
+        measurement:'WHO food-safety guidance emphasises reaching safe internal cooking temperatures to prevent foodborne illness; recognised guidance for visual accessibility recommends talking or tactile thermometers to confirm this without relying on sight.',
+        example:'A talking meat thermometer announces the internal temperature aloud, replacing a household member\'s previous habit of guessing doneness by cutting into food and checking colour.',
+        tip:'Let food or liquid cool slightly before testing temperature by touch — a quick, careful touch-test is safer than assuming.' },
+
+      { id:'ss39', num:'SS39', risk:'medium', title:'Talking or Tactile Kitchen Scale and Measuring Tools',
+        who:'Household members who are blind or have low vision who cook or manage medication doses involving measurement',
+        what:'Standard visual-display kitchen scales and measuring cups with no tactile or audible reference points',
+        where:'Food preparation areas and anywhere doses or portions are measured',
+        why:'Accurate measurement matters for both cooking outcomes and, in some households, for medication or dietary management, and a display that cannot be read is a barrier to independence',
+        how:'Use a talking kitchen scale, or tactile measuring cups and spoons with raised markings, matched to the specific tasks the person regularly performs',
+        measurement:'Recognised guidance for visual accessibility identifies talking scales and tactile measuring tools as standard accessible kitchen equipment.',
+        example:'A talking kitchen scale announces weight aloud as ingredients are added, replacing a small-print visual display that was previously unreadable.',
+        tip:'Tactile measuring cups with distinctly different raised shapes for each size are easier to tell apart quickly than cups that differ only by printed numbers.' },
+
+      { id:'ss40', num:'SS40', risk:'critical', title:'Gas Leak Detection Suited to the Household\'s Sensory Needs',
+        who:'Households using gas appliances, particularly members who are deaf, hard of hearing, blind, or have low vision',
+        what:'Reliance on smell alone to detect a gas leak, with no alarm-based backup',
+        where:'Wherever gas appliances are installed, particularly the kitchen',
+        why:'Smell alone is not a reliable safety system for anyone, and is not an option at all for identifying a leak\'s severity or exact source for a person with reduced sensory input elsewhere',
+        how:'Install a dedicated gas leak detector with audible, visual and vibrating alert options appropriate to the household\'s needs, in addition to normal awareness of smell',
+        measurement:'Recognised gas-safety guidance recommends dedicated gas detection devices rather than relying on smell alone, with alert methods matched to household members\' sensory needs.',
+        example:'A household with a gas stove installs a gas leak detector with a strobe light alert after realising their only previous safeguard was noticing an unusual smell.',
+        tip:'Position a gas detector low to the ground for heavier-than-air gases and near the ceiling for lighter-than-air gases — check the specific gas type used in the home.' },
+
+      { id:'ss41', num:'SS41', risk:'medium', title:'Consistent Placement of Cooking Tools and Ingredients During Use',
+        who:'Household members who are blind or have low vision',
+        what:'Tools and ingredients set down in random spots on the counter while cooking, rather than a consistent working system',
+        where:'The active cooking and prep counter space',
+        why:'Losing track of where a knife, hot pan handle, or ingredient was set down mid-task creates an immediate safety risk during active cooking',
+        how:'Use a consistent "clock position" or zone system for setting down tools and ingredients while cooking, so their location is always known without needing to search',
+        measurement:'Recognised guidance for kitchen accessibility for visually impaired individuals recommends a consistent spatial system (such as clock positions relative to the cook) for tracking tools and ingredients during active food preparation.',
+        example:'A household member adopts a habit of always placing the knife at the "3 o\'clock" position relative to the cutting board, so its location is never in doubt mid-task.',
+        tip:'Practise the system during a calm, unhurried cooking session first, before relying on it for a more complex or rushed meal.' },
+
+      { id:'ss42', num:'SS42', risk:'low', title:'Reduced-Glare Task Lighting Specifically Over Cooking and Prep Areas',
+        who:'Household members with low vision',
+        what:'Overhead kitchen lighting that creates glare off countertops or casts the cook\'s own shadow over the work area',
+        where:'The stovetop, sink, and primary food preparation counter',
+        why:'Task-specific, glare-controlled lighting over these areas supports safer, more precise work with knives, heat, and small ingredients',
+        how:'Add under-cabinet or direct task lighting over key work areas, angled and diffused to avoid glare or shadow interference',
+        measurement:'Recognised low-vision environmental design guidance recommends dedicated, glare-controlled task lighting for kitchen work surfaces in addition to general room lighting.',
+        example:'Under-cabinet LED strip lighting is added over the main prep counter after a household member found the overhead light left their own shadow across the cutting board.',
+        tip:'Warm, diffused LED strips generally cause less glare on countertops than a single bright overhead spotlight.' }
+    ]
+  },
+  {
+    id: 4, name: 'Communication & Assistive Technology', icon: '📱',
+    desc: '14 checks: hearing aid and cochlear implant care and battery management, screen-reader and magnification technology, captioning on devices and television, keeping devices charged and accessible, a communication plan for medical and emergency situations, teaching household members clear communication habits, and technology as a support alongside good design, not a replacement for it.',
+    checks: [
+      { id:'ss43', num:'SS43', risk:'high', title:'Hearing Aid or Cochlear Implant Daily Care Routine',
+        who:'Household members who use hearing aids or cochlear implants',
+        what:'Inconsistent cleaning, storage, or handling of hearing devices',
+        where:'Wherever hearing devices are stored, cleaned and charged, typically a bedside table or bathroom',
+        why:'A consistent daily care routine keeps devices working reliably and extends their working life, and a device that fails unexpectedly removes a person\'s primary access to sound',
+        how:'Establish and follow a daily routine for cleaning, drying, and storing hearing devices in the same place every night, following the manufacturer\'s or audiologist\'s care instructions',
+        measurement:'Recognised audiology guidance recommends a consistent daily cleaning and storage routine for hearing aids and cochlear implant processors to maintain function and hygiene.',
+        example:'A dedicated drying box on the bedside table becomes the fixed nightly home for hearing aids, replacing the previous habit of leaving them wherever they were removed.',
+        tip:'A consistent storage spot also means the devices can be found quickly and calmly during an overnight emergency.' },
+
+      { id:'ss44', num:'SS44', risk:'critical', title:'Spare Batteries and Charging Supplies for Hearing Devices Always Available',
+        who:'Household members who use hearing aids or cochlear implants',
+        what:'No spare batteries or backup charging option kept in the home',
+        where:'Near the hearing device storage location, and in a travel bag or emergency kit',
+        why:'A dead battery with no replacement on hand can leave a person without hearing at an unpredictable and potentially unsafe moment',
+        how:'Keep a stocked supply of the correct battery size (or a charged backup charging case for rechargeable devices) at home and in any bag used away from home',
+        measurement:'Recognised guidance for hearing device management recommends keeping at least one full spare set of batteries or a backup charging solution on hand at all times.',
+        example:'A small battery case is added to the household emergency kit after a hearing aid battery died during a power outage with no spares in the house.',
+        tip:'Check battery stock on the same day each month, alongside the household\'s alarm-testing routine, so it\'s never forgotten.' },
+
+      { id:'ss45', num:'SS45', risk:'medium', title:'Screen-Reader Technology Set Up and Working on Key Devices',
+        who:'Household members who are blind or have significant low vision',
+        what:'Phones, computers or tablets without screen-reader software installed, configured, or kept updated',
+        where:'The person\'s primary phone, computer, and any other regularly used device',
+        why:'Screen-reader technology provides independent access to messages, information, and emergency alerts delivered through text',
+        how:'Set up and test built-in or third-party screen-reader software on every device the person regularly uses, and check it after any software update',
+        measurement:'Recognised guidance for visual accessibility identifies screen-reader software as core assistive technology for independent device use by people who are blind or have significant low vision.',
+        example:'A household member\'s phone screen reader stops announcing notifications correctly after a software update; the setting is found and restored the same day it\'s noticed.',
+        tip:'Check accessibility settings again after every major device software update — they can reset unexpectedly.' },
+
+      { id:'ss46', num:'SS46', risk:'medium', title:'Magnification Technology and Settings Configured for the Person\'s Needs',
+        who:'Household members with low vision',
+        what:'Devices left at default text size and contrast settings rather than configured for the individual\'s specific vision needs',
+        where:'Phones, computers, tablets, and any digital display device used regularly',
+        why:'Correctly configured magnification, contrast, and text size settings can significantly extend independent use of digital devices for someone with low vision',
+        how:'Work with the person to configure magnification, high-contrast display modes, and text size on each of their devices, and revisit the settings periodically as vision needs change',
+        measurement:'Recognised guidance for low-vision accessibility recommends individually configured magnification and contrast settings, reviewed periodically rather than set once and left unchanged.',
+        example:'A tablet\'s display is switched to a high-contrast, large-text mode after a household member found the default settings increasingly difficult to read.',
+        tip:'Most devices have accessibility settings that can be saved as a shortcut for quick toggling — set this up so the settings are easy to reach.' },
+
+      { id:'ss47', num:'SS47', risk:'high', title:'Captioning Enabled on Television and Streaming Devices',
+        who:'Household members who are deaf or hard of hearing',
+        what:'Television and streaming devices left with captions off by default',
+        where:'Every television and streaming device in the home',
+        why:'Captions provide equal access to news, entertainment, and any safety broadcasts shown on screen',
+        how:'Enable captions as the default setting on every television and streaming device in the home, and check the setting persists after software updates',
+        measurement:'Recognised guidance for hearing accessibility identifies captioning as a standard, widely available accommodation that should be enabled by default rather than switched on only when needed.',
+        example:'Captions are set as the default on the household\'s streaming device after repeatedly needing to be re-enabled for every new show.',
+        tip:'Check caption settings after any device reset or software update — they sometimes revert to off.' },
+
+      { id:'ss48', num:'SS48', risk:'medium', title:'Captioning or Transcription Available for Video Calls',
+        who:'Household members who are deaf or hard of hearing',
+        what:'Video calling apps used for medical appointments or family contact without captioning or transcription enabled',
+        where:'Any device used for video calls, including telehealth appointments',
+        why:'Video calls, including medical telehealth appointments, need to be genuinely accessible, not just visually present',
+        how:'Enable built-in live captioning features on video calling platforms, or use a dedicated captioning service, and confirm the feature works before an important call such as a medical appointment',
+        measurement:'Recognised guidance for hearing accessibility recommends live captioning for video calls, particularly for medical and other important appointments conducted remotely.',
+        example:'Live captions are tested and confirmed working on the household\'s video calling app the day before a telehealth appointment, avoiding a scramble on the day.',
+        tip:'Test any captioning feature in advance of an important call — don\'t assume it will simply work on the day.' },
+
+      { id:'ss49', num:'SS49', risk:'high', title:'All Assistive Devices Kept Charged and in a Consistent Accessible Location',
+        who:'Household members who rely on assistive technology',
+        what:'Assistive devices (phones, hearing aids, screen-reading devices, alert receivers) left uncharged or misplaced',
+        where:'A consistent charging station, ideally near the person\'s home base for other frequently used items',
+        why:'An uncharged or misplaced assistive device is unavailable exactly when it may be needed most',
+        how:'Set up one consistent charging location for all assistive devices, and build a nightly routine of returning devices there to charge',
+        measurement:'Recognised guidance for assistive technology use identifies consistent charging routines as essential to reliable day-to-day access, matching the household\'s broader home-base organisation principle.',
+        example:'A charging station combining a phone charger and hearing aid dehumidifier box is set up on one bedside table, ending the previous habit of devices ending up in different rooms.',
+        tip:'Combine the charging routine with the hearing-device care routine so both happen at the same time each night.' },
+
+      { id:'ss50', num:'SS50', risk:'critical', title:'A Written Communication Plan for Medical Appointments and Emergencies',
+        who:'Household members who are deaf, hard of hearing, blind, or have low vision',
+        what:'No prepared plan for how the person will communicate during a medical appointment, hospital visit, or emergency response',
+        where:'Kept with the person\'s identification and medical information, and shared with emergency contacts',
+        why:'Communication needs can be missed or misunderstood in high-stress medical or emergency situations unless they are made clear in advance, in writing',
+        how:'Prepare a simple written summary of the person\'s communication needs and preferences (preferred language or method, whether an interpreter is needed, hearing device details, vision level) to carry and share with first responders and medical staff',
+        measurement:'Recognised guidance for accessible emergency and medical communication recommends a written communication summary prepared in advance, since needs may be difficult to establish quickly under stress.',
+        example:'A card kept in a wallet states the person is deaf, uses sign language, and requests a qualified interpreter be arranged for any hospital visit.',
+        tip:'Update the communication plan whenever hearing or vision needs change, and keep a copy with every emergency contact, not just the person themselves.' },
+
+      { id:'ss51', num:'SS51', risk:'high', title:'Household Members Trained in Basic Deaf/Hard-of-Hearing Communication Accommodations',
+        who:'All household members and frequent visitors',
+        what:'Household members unaware of simple communication habits that make a significant difference for a deaf or hard-of-hearing person',
+        where:'Applies to every interaction throughout the home',
+        why:'Facing the person directly, speaking clearly without shouting or exaggerating, and getting their attention before speaking can substantially improve communication without any equipment at all',
+        how:'Teach every household member the basics: face the person, ensure your face is lit and visible, speak clearly at a normal pace without shouting, get their attention first (a light touch, wave, or visual signal), and confirm understanding rather than assuming it',
+        measurement:'Recognised guidance for hearing accessibility identifies these communication habits as effective, no-cost accommodations that support lip-reading and general comprehension.',
+        example:'A household adopts a habit of gently touching a shoulder or waving into view before speaking, rather than calling out from another room and assuming they were heard.',
+        tip:'Shouting distorts lip patterns and facial expression, making lip-reading harder, not easier — speak at a normal volume and pace instead.' },
+
+      { id:'ss52', num:'SS52', risk:'high', title:'Household Members Trained in Basic Guiding and Sighted-Guide Technique',
+        who:'All household members and frequent visitors',
+        what:'Household members unfamiliar with a safe, respectful way to physically guide a person who is blind or has low vision',
+        where:'Applies to any situation where guiding is needed, in or outside the home',
+        why:'An untrained or overly directive guiding approach can be unsafe, uncomfortable, or undermine the person\'s independence and confidence',
+        how:'Learn basic sighted-guide technique — offering an arm rather than grabbing the person\'s arm, walking slightly ahead, and giving clear verbal cues about steps, doors, and obstacles — and use it only when guiding is actually wanted',
+        measurement:'Recognised orientation-and-mobility guidance teaches sighted-guide technique as a standard, respectful method, and emphasises always asking whether guidance is wanted rather than assuming.',
+        example:'A visiting relative learns to offer an elbow rather than steering the person by the shoulder, after being shown the correct technique by the household.',
+        tip:'Always ask "would you like a guide?" rather than assuming — many people navigate confidently without one in familiar spaces.' },
+
+      { id:'ss53', num:'SS53', risk:'medium', title:'Technology Treated as a Support Alongside Good Design, Not a Replacement',
+        who:'The whole household',
+        what:'An assumption that assistive technology alone solves accessibility, while basic environmental design (lighting, contrast, layout, decluttering) is neglected',
+        where:'Applies to the whole home and every zone in this module',
+        why:'Technology can fail, run out of charge, or simply not be worn or carried at every moment — good underlying design remains the foundation that technology supports, not replaces',
+        how:'Treat every technology solution as an addition to, not a substitute for, the environmental and layout safety measures covered elsewhere in this checklist',
+        measurement:'Recognised guidance for accessible design across disciplines consistently frames assistive technology as a complement to good environmental design, not a substitute for it.',
+        example:'A household that installed excellent captioning and alert technology realises they had let clutter build up in hallways, assuming technology alone made the home "accessible enough."',
+        tip:'Periodically re-check the basics in the layout, alarm and kitchen zones even after technology solutions are in place — good design doesn\'t switch off when a device is switched on.' },
+
+      { id:'ss54', num:'SS54', risk:'medium', title:'Regular Professional Review of Assistive Technology and Devices',
+        who:'Household members who use hearing aids, cochlear implants, screen readers, or other assistive technology',
+        what:'Devices used for extended periods without a professional check-up or reassessment',
+        where:'Applies to hearing devices, vision aids, and any other assistive technology in regular use',
+        why:'Hearing and vision needs can change gradually, and a device that was well-configured previously may no longer be optimally set for the person\'s current needs',
+        how:'Schedule regular reviews with the person\'s audiologist, ophthalmologist or optometrist, or assistive-technology provider to reassess devices and settings',
+        measurement:'Recognised audiology and low-vision care guidance recommends periodic professional review of assistive devices, with frequency individualised to the person\'s condition and any recent changes.',
+        example:'A scheduled annual hearing aid check identifies a gradual change in hearing levels, and the devices are reprogrammed to match.',
+        tip:'Book the next review appointment before leaving the current one — it\'s much easier to keep to a schedule than to remember to arrange it later.' },
+
+      { id:'ss55', num:'SS55', risk:'low', title:'Backup Communication Method When Technology Fails',
+        who:'The whole household',
+        what:'No agreed backup way to communicate important information if the primary technology (hearing devices, phone, captioning) is unavailable',
+        where:'Applies throughout the home, particularly during power outages or device failures',
+        why:'A backup method prevents complete communication breakdown during the exact situations — outages, emergencies — where clear communication matters most',
+        how:'Agree on a simple backup communication method, such as basic written notes, a pre-agreed set of simple hand signals, or a torch/flashlight signal, for use if primary technology is unavailable',
+        measurement:'Recognised guidance for emergency communication accessibility recommends having a low-technology backup method that does not depend on power or devices.',
+        example:'The household agrees on a simple flashlight signal pattern to mean "come here now" for use during a power outage when devices and lighting are both down.',
+        tip:'Practise the backup method occasionally so it\'s familiar if it\'s ever actually needed under stress.' },
+
+      { id:'ss56', num:'SS56', risk:'medium', title:'Accessible Formats for Important Household and Financial Documents',
+        who:'Household members who are blind or have low vision',
+        what:'Bills, medical letters, and important household documents provided only in small standard print',
+        where:'Wherever household mail and documents are received and stored',
+        why:'Independent access to financial, medical, and legal information is an important part of dignity and autonomy, not just convenience',
+        how:'Request large-print, braille, or accessible digital formats from service providers where available, or set up a consistent, trusted system for reading important documents aloud when a preferred accessible format isn\'t available',
+        measurement:'Recognised guidance for accessible communication recommends offering alternative formats (large print, braille, accessible digital/audio) for important personal documents on request.',
+        example:'A household member requests electronic statements compatible with their screen reader instead of small-print paper bills, restoring independent access to their own financial information.',
+        tip:'Many service providers can switch to an accessible format with a single phone call or account setting — it\'s worth asking even if it\'s not advertised.' }
+    ]
+  },
+  {
+    id: 5, name: 'Outdoor Movement & Community Safety', icon: '🚶',
+    desc: '14 checks: cane or guide dog considerations, safe route planning and rehearsal, crossing-safety adaptations, public transport considerations, weather-related hazard awareness for reduced sensory feedback, carrying identification and medical information, and community and neighbour awareness.',
+    checks: [
+      { id:'ss57', num:'SS57', risk:'high', title:'Correct Cane Selection, Length and Technique',
+        who:'Household members who are blind or have significant low vision and use a long cane',
+        what:'A cane that is the wrong length, condition, or used without proper technique',
+        where:'Wherever the person travels outside the home',
+        why:'An incorrectly sized cane or poor technique reduces the amount of advance warning the person receives about steps, kerbs, and obstacles',
+        how:'Have cane length and technique assessed and taught by a qualified orientation and mobility specialist, and replace a worn or damaged cane tip promptly',
+        measurement:'Recognised orientation-and-mobility guidance recommends professional cane fitting and technique training, generally sized to the individual\'s height and gait rather than a fixed universal length.',
+        example:'A cane that had become too short as a child grew is refitted by an orientation and mobility specialist, immediately improving how much advance warning of obstacles the child receives.',
+        tip:'Check the cane tip regularly — a worn tip reduces tactile feedback long before it becomes visibly damaged.' },
+
+      { id:'ss58', num:'SS58', risk:'high', title:'Guide Dog Care, Equipment and Public-Access Considerations',
+        who:'Household members who use a guide dog',
+        what:'Guide dog equipment, health, and public-access rights not consistently maintained or understood by the household',
+        where:'Wherever the guide dog works and rests, in and outside the home',
+        why:'A guide dog\'s harness fit, health, and working condition directly affect the safety and reliability of the guidance it provides',
+        how:'Keep guide dog equipment well-maintained and correctly fitted, follow the veterinary and working-dog care schedule provided by the guide dog organisation, and ensure all household members understand not to distract a working dog',
+        measurement:'Recognised guide dog organisation guidance provides specific equipment, health, and handling standards tailored to each dog and handler pairing.',
+        example:'A household establishes a "don\'t pet the dog when the harness is on" rule for visitors and children after noticing distractions during the dog\'s working time.',
+        tip:'Keep the guide dog organisation\'s contact information easily accessible for equipment issues or health concerns affecting the dog\'s work.' },
+
+      { id:'ss59', num:'SS59', risk:'critical', title:'Safe Route Planning and Rehearsal for Regular Trips',
+        who:'Household members who are blind or have low vision who travel regular routes independently',
+        what:'A regular route (to school, work, shops, or transport) that has not been deliberately planned and rehearsed with a trusted companion or orientation and mobility specialist',
+        where:'Any route walked or travelled regularly outside the home',
+        why:'Confident, safe independent travel depends on the route being genuinely learned in advance, not navigated for the first time alone',
+        how:'Walk new or regular routes together with a trusted companion or orientation and mobility specialist before the person travels them independently, noting landmarks, hazards, and decision points along the way',
+        measurement:'Recognised orientation-and-mobility guidance identifies structured route learning and rehearsal, ideally with a qualified specialist, as the standard approach before independent travel of a new route.',
+        example:'A new route to a bus stop after a house move is walked together several times, noting a tricky kerb and an uneven section of pavement, before the household member travels it alone.',
+        tip:'Rehearse the route at the time of day it will normally be used — lighting, traffic, and crowd conditions can change significantly between morning and evening.' },
+
+      { id:'ss60', num:'SS60', risk:'critical', title:'Crossing-Safety Adaptations at Regularly Used Intersections',
+        who:'Household members who are blind, have low vision, or are deaf or hard of hearing',
+        what:'Regularly used street crossings without accessible crossing signals or a reliable way to judge safe crossing timing',
+        where:'Every intersection along a regularly travelled route',
+        why:'Judging safe crossing timing by sight or sound alone is not reliable for someone with significant vision or hearing loss, and a misjudged crossing carries serious injury risk',
+        how:'Learn and use accessible pedestrian signal features where available (audible or vibrating crossing indicators), and where none exist, learn alternative cues (such as the sound or feel of parallel traffic starting to move) with a qualified orientation and mobility specialist',
+        measurement:'Recognised orientation-and-mobility guidance provides specific crossing-safety techniques for pedestrians with visual or hearing impairment, tailored to the intersection type and available signal infrastructure.',
+        example:'A household member learns to use the vibrating pedestrian signal button at a regularly crossed intersection, after previously relying on uncertain judgement of traffic sound alone.',
+        tip:'If a regularly used crossing has no accessible signal, ask a mobility specialist about alternative crossing points or techniques rather than accepting the higher-risk option as unavoidable.' },
+
+      { id:'ss61', num:'SS61', risk:'medium', title:'Public Transport Route and Stop Familiarity',
+        who:'Household members who are blind, have low vision, or are deaf or hard of hearing who use public transport',
+        what:'Public transport stops, routes, and boarding procedures that have not been specifically learned in advance',
+        where:'Bus stops, train platforms, and any regularly used public transport route',
+        why:'Boarding the correct vehicle, recognising the correct stop, and communicating with transport staff can each present specific challenges without preparation',
+        how:'Learn the specific stop location, boarding procedure, and any available accessibility features (audible or visual announcements) for regularly used public transport routes, ideally with a companion the first few times',
+        measurement:'Recognised orientation-and-mobility guidance addresses public transport travel as a distinct skill area requiring specific route and procedure familiarity.',
+        example:'A household member learns to identify their bus by asking the driver directly and confirms the route includes audible stop announcements before travelling it alone.',
+        tip:'Many transport services can provide advance information about accessibility features on a specific route — it\'s worth calling ahead before a first solo trip.' },
+
+      { id:'ss62', num:'SS62', risk:'high', title:'Weather-Related Hazard Awareness for Reduced Sensory Feedback',
+        who:'Household members who are blind or have low vision, or who have reduced sensation affecting balance and footing',
+        what:'Ice, wet leaves, standing water, and other weather-related surface hazards that are especially difficult to detect without clear visual feedback',
+        where:'Outdoor paths, steps, and any regularly used outdoor route',
+        why:'These hazards are hard to detect by cane or reduced vision and significantly increase fall risk in specific weather conditions',
+        how:'Build weather-awareness into daily routine (checking forecasts before heading out), adjust cane technique and pace in poor conditions, and consider postponing non-essential trips during high-risk weather where possible',
+        measurement:'Recognised orientation-and-mobility guidance addresses weather-related surface hazards as requiring adjusted technique and increased caution, since they are less detectable through standard cane or visual cues.',
+        example:'A household member checks the weather each morning as part of their routine and slows their pace and lengthens their cane arc on days following rain or frost.',
+        tip:'Wet leaves are often more slippery than they appear and can mask uneven or damaged pavement beneath them — treat them as a higher-caution surface.' },
+
+      { id:'ss63', num:'SS63', risk:'high', title:'Carrying Identification and Medical Information When Out',
+        who:'Household members who are blind, have low vision, or are deaf or hard of hearing',
+        what:'No identification or medical information carried that would help a stranger or emergency responder assist appropriately',
+        where:'Wherever the person travels outside the home',
+        why:'In an emergency or a moment of disorientation, accessible identification and medical information can significantly speed up appropriate help',
+        how:'Carry identification, emergency contact details, and key medical information (including hearing or vision status and any relevant conditions) in an easily found, consistent location such as a wallet or bag pocket',
+        measurement:'Recognised guidance for personal safety recommends carrying accessible identification and medical information, particularly for individuals with sensory impairments who may face communication barriers in an emergency.',
+        example:'A household member carries a card noting they are deaf and prefer written communication, alongside emergency contact details, in the same pocket of their bag every time they go out.',
+        tip:'Keep a photo of the card on the person\'s phone as a backup in case the physical card is misplaced.' },
+
+      { id:'ss64', num:'SS64', risk:'medium', title:'Community and Neighbour Awareness of the Household Member\'s Needs',
+        who:'Neighbours and regularly encountered community members',
+        what:'A household member\'s specific communication or mobility needs unknown to people they regularly encounter locally',
+        where:'The immediate neighbourhood and any regularly visited local businesses or services',
+        why:'Neighbours and familiar local contacts who understand the person\'s needs can offer more appropriate, welcome support and are more likely to notice if something seems wrong',
+        how:'Where the person is comfortable doing so, let trusted neighbours and regularly visited local contacts know about relevant needs and the best way to offer help if it\'s ever needed',
+        measurement:'Recognised community-based safety guidance identifies informed, trusted community awareness as a valuable layer of support for individuals with sensory impairments, always led by the individual\'s own comfort and preference.',
+        example:'A household lets a trusted neighbour know their family member is deaf and prefers a wave or a note through the door rather than knocking loudly and waiting.',
+        tip:'Let the person decide how much to share and with whom — this is about their comfort and preference, not a household decision made for them.' },
+
+      { id:'ss65', num:'SS65', risk:'medium', title:'Reflective or High-Visibility Elements for Low-Light Outdoor Movement',
+        who:'Household members who are blind or have low vision, and who benefit from being more visible to drivers and cyclists',
+        what:'No reflective or high-visibility elements worn or carried during low-light outdoor travel',
+        where:'Any outdoor route used at dawn, dusk, or after dark',
+        why:'Reflective and high-visibility elements help drivers and cyclists see the person from a greater distance, adding a layer of safety independent of the person\'s own vision or hearing',
+        how:'Add reflective elements to a cane, bag, or clothing, or wear a high-visibility item during low-light outdoor travel',
+        measurement:'Recognised pedestrian-safety guidance recommends reflective or high-visibility elements for anyone travelling outdoors in low light, with particular relevance for pedestrians who may have reduced ability to detect approaching vehicles by sight or sound.',
+        example:'Reflective tape is added to a household member\'s cane and bag after a near-miss with a cyclist at dusk.',
+        tip:'Reflective elements placed at different heights and on moving parts (like a swinging cane) are more noticeable to drivers than a single small patch.' },
+
+      { id:'ss66', num:'SS66', risk:'medium', title:'Consistent Route Choice Over Unfamiliar Shortcuts',
+        who:'Household members who are blind or have low vision who travel independently',
+        what:'Taking an unfamiliar shortcut or detour instead of a well-learned regular route',
+        where:'Any regularly travelled outdoor journey',
+        why:'A known, well-rehearsed route is significantly safer than an unfamiliar one, even if the unfamiliar option is technically shorter',
+        how:'Stick to well-learned routes for regular independent travel, and treat any new route as something to learn deliberately rather than improvise',
+        measurement:'Recognised orientation-and-mobility guidance emphasises the safety value of well-rehearsed, familiar routes over shorter but unlearned alternatives.',
+        example:'A household member declines a friend\'s suggested shortcut through an unfamiliar car park, sticking to their well-known route instead, and later learns the shortcut deliberately with a companion first.',
+        tip:'If a shortcut is genuinely useful, it\'s worth the time to learn it properly rather than avoiding it altogether or improvising it under time pressure.' },
+
+      { id:'ss67', num:'SS67', risk:'low', title:'A Way to Signal for Help While Out Alone',
+        who:'Household members who are blind, have low vision, or are deaf or hard of hearing who travel alone',
+        what:'No simple way to signal for help or attract assistance if disoriented or in difficulty while out',
+        where:'Applies to any solo outdoor trip',
+        why:'A simple, pre-planned way to signal for help adds a layer of safety for moments of genuine difficulty, without being restrictive of normal independent travel',
+        how:'Carry a phone with location sharing available to a trusted contact, and agree in advance on a simple way to signal for help to a passer-by if needed (such as a card that says "I am deaf/blind, please help me contact...")',
+        measurement:'Recognised guidance for personal safety while travelling recommends a simple, pre-agreed method for requesting assistance, tailored to the individual\'s communication needs.',
+        example:'A household member carries a small card reading "I am deaf — please write down what you need to tell me" for situations where a stranger tries to get their attention verbally.',
+        tip:'Keep the method simple enough to use even when flustered or disoriented — a short card or a single button press works better under stress than something that requires several steps.' },
+
+      { id:'ss68', num:'SS68', risk:'medium', title:'Awareness of Construction, Temporary Obstacles and Route Changes',
+        who:'Household members who are blind or have low vision who travel familiar routes',
+        what:'Temporary obstacles such as construction, parked vehicles blocking pavements, or roadworks that change a familiar, well-learned route without warning',
+        where:'Any regularly travelled route, particularly in areas with ongoing local construction or maintenance',
+        why:'A well-learned route becomes suddenly unreliable when a temporary obstacle appears, and this is a common cause of disorientation or injury for people who travel by memory',
+        how:'Build in a habit of extra caution and slower pace on familiar routes, and have a plan for what to do if an obstacle blocks the expected path (such as calling a companion or asking a nearby person for a description)',
+        measurement:'Recognised orientation-and-mobility guidance identifies temporary and unmarked obstacles as a known limitation of route-memory-based travel, requiring a backup strategy.',
+        example:'A household member finds their usual pavement blocked by construction fencing and, having a plan in place, pauses to ask a passer-by for a description rather than attempting to navigate around it uncertainly.',
+        tip:'If a construction obstacle is expected to stay for a while, learn the detour deliberately with a companion rather than improvising it every time.' },
+
+      { id:'ss69', num:'SS69', risk:'medium', title:'Sun Glare and Bright-Light Adaptations for Outdoor Low Vision',
+        who:'Household members with low vision who are sensitive to bright light or glare',
+        what:'No glare protection used during bright outdoor conditions',
+        where:'Any outdoor travel during daylight, particularly bright or overcast-glare conditions',
+        why:'Some forms of low vision involve significant light sensitivity, where bright glare can temporarily reduce usable vision even further',
+        how:'Use tinted or polarised glasses suited to the person\'s specific light sensitivity, and a wide-brimmed hat where helpful, particularly for known high-glare conditions such as bright overcast sky or reflective surfaces',
+        measurement:'Recognised low-vision guidance recommends individually assessed tinted lens options for light sensitivity, since the ideal tint and darkness vary significantly between different eye conditions.',
+        example:'A household member finds a specific tint recommended by their eye care professional noticeably reduces glare-related difficulty on bright days compared to standard sunglasses.',
+        tip:'Bright overcast days can cause more glare difficulty than direct sunshine for some eye conditions — don\'t assume glare protection is only needed on clearly sunny days.' },
+
+      { id:'ss70', num:'SS70', risk:'low', title:'Practising New Routes with a Trusted Companion Before Going Alone',
+        who:'Household members who are blind or have low vision',
+        what:'A new destination or route attempted alone for the first time without any prior practice',
+        where:'Any new route, particularly to an unfamiliar or infrequently visited destination',
+        why:'The first trip on any new route carries the highest risk of disorientation; practising with a companion first substantially reduces this',
+        how:'Always plan at least one practice trip with a trusted companion or orientation and mobility specialist before travelling a genuinely new route alone',
+        measurement:'Recognised orientation-and-mobility guidance consistently recommends supervised practice before independent travel of a new route, as a standard part of safe travel training.',
+        example:'Before starting a new part-time role, a household member practises the commute twice with a family member before making the trip alone on the first day.',
+        tip:'Practise at the actual time of day the trip will normally happen — a route learned in daylight can feel unfamiliar again after dark.' }
+    ]
+  },
+  {
+    id: 6, name: 'Family Communication, Caregiver Support & Emergency Preparedness', icon: '🤝',
+    desc: '14 checks: household members trained in the person\'s specific communication and mobility needs, respecting autonomy and avoiding over-helping, evacuation planning that accounts for not hearing alarms or seeing exit signs, a buddy system for emergencies, the caregiver\'s own understanding of assistive technology, peer support and community resources, and full participation in home life.',
+    checks: [
+      { id:'ss71', num:'SS71', risk:'high', title:'Household Members Trained in the Person\'s Specific Communication Needs',
+        who:'All household members, including children old enough to understand',
+        what:'Household members who have not been specifically taught the person\'s preferred communication method and needs',
+        where:'Applies throughout daily life at home',
+        why:'Every household with a deaf, hard-of-hearing, blind, or low-vision member has its own specific mix of needs and preferences that generic advice cannot fully cover',
+        how:'Sit down as a household and go through the specific communication needs and preferences of the person directly with them, and revisit this conversation as needs change',
+        measurement:'Recognised guidance for person-centred accessibility support emphasises that individual needs and preferences, established directly with the person, take priority over generic accommodation advice.',
+        example:'A family discusses directly with their teenager which communication approaches actually work for them, rather than assuming based on general advice about deaf communication.',
+        tip:'Ask the person directly what works for them rather than assuming — needs and preferences can differ significantly between individuals with similar conditions.' },
+
+      { id:'ss72', num:'SS72', risk:'high', title:'Household Members Trained in the Person\'s Specific Mobility and Orientation Needs',
+        who:'All household members, including children old enough to understand',
+        what:'Household members who have not been taught the person\'s specific mobility aids, techniques, and preferences',
+        where:'Applies throughout daily life at home and when travelling together',
+        why:'Understanding exactly how the person uses a cane, guide dog, or other technique allows household members to support safely and appropriately, rather than guessing',
+        how:'Ask the person or their orientation and mobility specialist to walk household members through the specific techniques and preferences in use, including how and when the person wants (or doesn\'t want) assistance',
+        measurement:'Recognised orientation-and-mobility guidance recommends involving family members in understanding an individual\'s specific mobility techniques and preferences as part of a full training programme.',
+        example:'An orientation and mobility specialist includes a short session with the whole family to explain exactly how and when their family member prefers guiding assistance.',
+        tip:'Preferences can be different in different settings — ask specifically about home, familiar outdoor routes, and unfamiliar places rather than assuming one preference covers everything.' },
+
+      { id:'ss73', num:'SS73', risk:'critical', title:'Respecting Autonomy and Avoiding Over-Helping',
+        who:'All household members',
+        what:'Well-intentioned but excessive help — physically guiding without being asked, speaking for the person, or taking over tasks they can do independently',
+        where:'Applies throughout daily life at home and in the community',
+        why:'Over-helping can undermine confidence, independence, and skill-building over time, even when it comes from genuine care, and can be experienced as disrespectful of the person\'s competence',
+        how:'Ask before helping rather than assuming, respect a "no thank you," and consciously make space for the person to do things independently even when helping would be faster',
+        measurement:'Recognised person-centred and disability-rights guidance identifies respect for autonomy and self-determination as a foundational principle, distinct from and sometimes in tension with well-meaning assistance.',
+        example:'A parent catches themselves automatically describing a room to their visually impaired child before being asked, and instead waits to see if the child requests information first.',
+        tip:'"Would you like help with that?" takes one extra second and preserves the person\'s right to choose — make it a household habit for everyone, including visitors.' },
+
+      { id:'ss74', num:'SS74', risk:'critical', title:'Evacuation Planning That Accounts for Not Hearing Alarms',
+        who:'Household members who are deaf or hard of hearing',
+        what:'A household evacuation plan that assumes everyone will hear the alarm and know to move immediately',
+        where:'Applies to the whole home evacuation plan',
+        why:'A person who does not receive the audible alarm needs a specific, planned way to be alerted and guided to safety without relying on hearing it themselves',
+        how:'Build the vibrating and visual alert systems into the evacuation plan directly, and assign a specific household member the role of physically alerting the deaf or hard-of-hearing person if they are together at the time',
+        measurement:'Recognised fire-safety and emergency-preparedness guidance for deaf and hard-of-hearing individuals recommends evacuation plans built specifically around non-audible alerting and a designated alert responsibility.',
+        example:'The household\'s written evacuation plan specifically states that whoever is nearest to the deaf family member is responsible for immediately getting their attention and guiding them out, rather than assuming they will hear the alarm and self-evacuate.',
+        tip:'Practise this specific step during a fire drill — don\'t just discuss it in theory, actually rehearse how the alert and guidance will happen.' },
+
+      { id:'ss75', num:'SS75', risk:'critical', title:'Evacuation Planning That Accounts for Not Seeing Exit Signs or Smoke',
+        who:'Household members who are blind or have low vision',
+        what:'A household evacuation plan that assumes everyone can visually follow exit signs or see smoke to judge a safe path',
+        where:'Applies to the whole home evacuation plan',
+        why:'A person who is blind or has significant low vision needs a plan based on a well-rehearsed, memorised route and physical guidance, not visual cues that may be unavailable or unreliable in smoke or darkness',
+        how:'Rehearse the evacuation route physically and repeatedly with the person until it is second nature, including a version of the route that works by touch (following a wall) in case guidance from another person is not available',
+        measurement:'Recognised fire-safety guidance for people who are blind or have low vision recommends physically rehearsed evacuation routes and touch-based wall-following techniques as backups to guided evacuation.',
+        example:'A household member who is blind practises the evacuation route from their bedroom by following the wall with a hand, so they have a reliable backup if no one else is available to guide them.',
+        tip:'Smoke can obscure vision for sighted household members too — a rehearsed, memorised route benefits the whole household, not just the person who is blind or has low vision.' },
+
+      { id:'ss76', num:'SS76', risk:'high', title:'A Buddy System for Emergencies and Evacuations',
+        who:'The whole household',
+        what:'No specific person assigned responsibility for checking on and assisting the household member with sensory impairment during an emergency',
+        where:'Applies to the whole home evacuation and emergency plan',
+        why:'In the confusion of a genuine emergency, having one specific person with a clear, pre-assigned responsibility is far more reliable than assuming "someone" will help',
+        how:'Assign a specific primary buddy (and a backup, in case the primary is not present) whose role during any emergency is to alert, guide, and stay with the household member with sensory impairment until they are safely out',
+        measurement:'Recognised emergency-preparedness guidance for individuals with disabilities recommends a formally assigned buddy system as a core part of emergency and evacuation planning.',
+        example:'The household\'s evacuation plan names one sibling as the primary buddy and a parent as backup, so responsibility is never left to chance in the moment.',
+        tip:'Make sure the assigned buddy is realistically capable of the role — choose based on who is actually present and able most of the time, not just who volunteers.' },
+
+      { id:'ss77', num:'SS77', risk:'medium', title:'Caregiver\'s Own Understanding of the Household\'s Assistive Technology',
+        who:'Any household member acting in a caregiving role',
+        what:'A caregiver who is unfamiliar with how the household\'s alert systems, hearing devices, or other assistive technology actually work',
+        where:'Applies to every piece of assistive technology in regular use in the home',
+        why:'A caregiver needs to genuinely understand the technology in use to troubleshoot problems, support its correct use, and step in effectively during a malfunction',
+        how:'Ensure at least one other household member, in addition to the person using the technology, understands how to operate, charge, and troubleshoot each key piece of assistive technology',
+        measurement:'Recognised caregiver support guidance recommends that caregivers develop working knowledge of the specific assistive technology in use, rather than relying solely on the individual to manage it alone.',
+        example:'A parent learns how to replace their child\'s hearing aid battery and reset the bed-shaker alarm device, so they are not dependent on the child managing every technical issue alone.',
+        tip:'Ask the audiologist, orientation and mobility specialist, or technology provider to include the caregiver directly in setup and troubleshooting instruction, not just the person using the device.' },
+
+      { id:'ss78', num:'SS78', risk:'medium', title:'Caregiver\'s Own Physical Safety During Guiding or Assistance',
+        who:'Any household member who physically guides or assists the person',
+        what:'Guiding or lifting technique that risks the caregiver\'s own back, shoulders, or joints',
+        where:'Applies to any physical guiding or assistance situation',
+        why:'A caregiver\'s own injury reduces their ability to provide support and adds a second household safety concern',
+        how:'Learn correct sighted-guide and any physical assistance technique properly, and avoid guiding methods (such as pulling by the wrist) that create strain or awkward positioning for the caregiver',
+        measurement:'Recognised guidance for caregiver safety and correct sighted-guide technique addresses both the safety of the person being guided and the physical wellbeing of the person guiding.',
+        example:'A caregiver who had been guiding by pulling gently at the wrist switches to offering an elbow instead, after learning the correct technique reduces strain for both people.',
+        tip:'If any regular physical assistance is starting to cause the caregiver discomfort or strain, that is worth raising with an occupational therapist just as much as any concern about the person being assisted.' },
+
+      { id:'ss79', num:'SS79', risk:'medium', title:'Peer Support and Community Resource Connections',
+        who:'The person with sensory impairment and the wider household',
+        what:'The household navigating sensory impairment in isolation, without connection to relevant peer or community resources',
+        where:'Applies to the household\'s broader support network beyond the home',
+        why:'Peer support from others with similar experience, and connection to relevant community organisations, can provide practical knowledge and emotional support that professional services alone may not fully cover',
+        how:'Research and connect with relevant peer support groups, community organisations, or associations for people who are blind, have low vision, are deaf, or are hard of hearing, matched to the person\'s own interest and comfort',
+        measurement:'Recognised guidance for disability and chronic-condition support consistently identifies peer support as a valuable complement to clinical and professional services.',
+        example:'A newly diagnosed household member connects with a local peer support group and finds practical daily-living tips that hadn\'t come up in clinical appointments.',
+        tip:'Let the person lead on how much peer connection they want — some find it very valuable, others prefer a smaller or different kind of support network, and both are valid.' },
+
+      { id:'ss80', num:'SS80', risk:'medium', title:'Regular Family Conversations About Changing Needs',
+        who:'The whole household',
+        what:'Communication and mobility needs discussed once, at diagnosis or onset, and not revisited as they naturally change over time',
+        where:'Applies to ongoing household conversation and planning',
+        why:'Vision, hearing, and personal preferences can change gradually, and a household\'s accommodations need to keep pace rather than staying fixed to an earlier stage',
+        how:'Build in a regular, low-pressure check-in (alongside routine professional appointments) to ask directly whether current arrangements are still working well',
+        measurement:'Recognised person-centred care guidance recommends regular review of accommodations and support arrangements, since needs are not static over time.',
+        example:'A household adds a brief conversation at each hearing aid check-up appointment specifically asking whether anything at home needs adjusting.',
+        tip:'Tie the conversation to an existing routine (like a device check-up) so it happens reliably rather than only when a problem has already occurred.' },
+
+      { id:'ss81', num:'SS81', risk:'medium', title:'Including the Person in Planning Their Own Safety Measures',
+        who:'The person with sensory impairment',
+        what:'Safety measures decided and implemented by other household members without the person\'s direct input',
+        where:'Applies to every zone and decision in this checklist',
+        why:'The person living with the sensory impairment has direct, first-hand knowledge of what actually helps them, and safety measures decided without them are more likely to be impractical or unwanted',
+        how:'Involve the person directly in every safety decision that affects them, from labelling systems to evacuation planning, treating their preference as the primary guide rather than an afterthought',
+        measurement:'Recognised person-centred and disability-rights guidance identifies direct involvement of the individual in decisions affecting them as a foundational principle of respectful, effective support.',
+        example:'A household redoes their kitchen labelling system after involving their family member directly, switching from a system the household had guessed would work to one the person actually finds easy to use.',
+        tip:'When in doubt about any adaptation in this checklist, ask the person directly rather than guessing on their behalf.' },
+
+      { id:'ss82', num:'SS82', risk:'low', title:'Visitors and Extended Family Briefed on Household Adaptations',
+        who:'Regular visitors and extended family members',
+        what:'Visitors unaware of household rules such as furniture placement, door habits, or communication approaches',
+        where:'Applies whenever visitors or extended family are in the home',
+        why:'A single unaware visitor moving furniture or leaving a door ajar can undo carefully maintained household safety habits',
+        how:'Give regular visitors and extended family a brief, friendly explanation of the household\'s key adaptations (furniture placement, doors fully open or closed, communication approach) before or during their visit',
+        measurement:'Recognised guidance for maintaining consistent accessible environments recommends briefing regular visitors, since safety measures depend on being maintained by everyone present, not only permanent household members.',
+        example:'A simple printed note by the front door reminds visitors of the "doors fully open or closed" and "please don\'t move furniture" household rules.',
+        tip:'A light, friendly tone works better than a formal list — most visitors are glad to help once they understand why it matters.' },
+
+      { id:'ss83', num:'SS83', risk:'medium', title:'A Shared Household Calendar for Appointments and Device Maintenance',
+        who:'The whole household',
+        what:'Hearing, vision, mobility, and device-related appointments and maintenance tasks tracked informally or inconsistently',
+        where:'Applies to household planning and scheduling',
+        why:'Missed appointments and overdue device maintenance (battery checks, professional reviews, alarm testing) can each individually seem minor but add up to reduced safety and support over time',
+        how:'Keep a shared household calendar or reminder system covering all appointments and recurring maintenance tasks from this checklist, visible and accessible to the whole household',
+        measurement:'Recognised guidance for chronic-condition and disability household management recommends a consistent shared tracking system for appointments and recurring care or maintenance tasks.',
+        example:'A shared calendar includes recurring monthly reminders for alarm testing and battery checks alongside quarterly professional appointments, so nothing depends on one person\'s memory alone.',
+        tip:'Make sure the calendar itself is in an accessible format for every household member who needs to use it, including the person with sensory impairment.' },
+
+      { id:'ss84', num:'SS84', risk:'low', title:'Independence and Full Participation in Home Life Remain the Guiding Goal',
+        who:'The whole household',
+        what:'Safety measures that, taken together, could unintentionally reduce independence or full participation in home and family life if applied without balance',
+        where:'The whole home and every safety decision made within it',
+        why:'The purpose of every check in this module is to support a safe, capable, independent daily life and full participation in the household — not to create a restrictive or overly cautious environment',
+        how:'When making any safety decision, weigh it against its effect on independence and participation, and favour the option that supports both safety and genuine autonomy wherever possible',
+        measurement:'Recognised person-centred care and accessibility guidance treats independence and full participation as core, ongoing goals alongside physical safety, not secondary considerations.',
+        example:'A household chooses a labelling and organisation system that supports independent cooking over one that would be simpler for other household members but require assistance for every meal.',
+        tip:'When two safety options are both reasonable, choose the one that keeps the most independence, dignity, and participation intact.' }
+    ]
+  }
+];
+
+const STORE_KEY = 'safelife-sensory-pro';
+const completed = new Set();
+let lang = 'en', theme = 'sensory', mode = 'light', riskFilter = null, activeZone = 1;
+const TOTAL = 84;
+
+function t(key){ return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key; }
+function persist(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify({completed:[...completed], lang, theme, mode})); }catch(e){}
+}
+function restore(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    (d.completed||[]).forEach(id=>completed.add(id));
+    if(false && d.lang && I18N[d.lang]) lang = d.lang; /* language switching disabled for English-only release — remove "false &&" to re-enable */
+    if(d.theme) theme = d.theme;
+    if(d.mode) mode = d.mode;
+  }catch(e){}
+}
+
+// ═══════════════════════════════════════════
+// PROGRESS & STATS
+// ═══════════════════════════════════════════
+function updateProgress(){
+  const done = completed.size;
+  document.getElementById('topbar-done').textContent = done;
+  document.getElementById('progress-count').textContent = done + ' ' + t('ofWord') + ' ' + TOTAL;
+  document.getElementById('progress-fill').style.width = (done/TOTAL*100) + '%';
+  ZONES.forEach(z=>{
+    const zDone = z.checks.filter(c=>completed.has(c.id)).length;
+    document.getElementById('ztc-'+z.id).textContent = zDone + '/14';
+  });
+  document.getElementById('celebrate').classList.toggle('show', done === TOTAL);
+  persist();
+}
+function fillStats(){
+  const counts = {critical:0,high:0,medium:0,low:0};
+  ZONES.forEach(z=>z.checks.forEach(c=>counts[c.risk]++));
+  ['critical','high','medium','low'].forEach(r=>{ document.getElementById('s-'+r).textContent = counts[r]; });
+}
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function buildCard(check){
+  const card = document.createElement('div');
+  card.className = 'check-card' + (completed.has(check.id) ? ' completed' : '');
+  card.dataset.id = check.id;
+  card.dataset.risk = check.risk;
+  card.innerHTML =
+    '<div class="check-header">' +
+      '<div class="check-checkbox">' + (completed.has(check.id) ? '✓' : '') + '</div>' +
+      '<div class="check-num">' + check.num + '</div>' +
+      '<div class="check-risk risk-' + check.risk + '">' + t(check.risk) + '</div>' +
+      '<div class="check-title">' + check.title + '</div>' +
+      '<div class="check-chevron">▼</div>' +
+    '</div>' +
+    '<div class="check-detail">' +
+      '<div class="detail-grid">' +
+        '<div class="detail-item"><div class="detail-label"><span>👤</span>' + t('who') + '</div><div class="detail-value">' + check.who + '</div></div>' +
+        '<div class="detail-item"><div class="detail-label"><span>⚠️</span>' + t('what') + '</div><div class="detail-value">' + check.what + '</div></div>' +
+        '<div class="detail-item"><div class="detail-label"><span>📍</span>' + t('where') + '</div><div class="detail-value">' + check.where + '</div></div>' +
+        '<div class="detail-item"><div class="detail-label"><span>❓</span>' + t('why') + '</div><div class="detail-value">' + check.why + '</div></div>' +
+        '<div class="detail-item full"><div class="detail-label"><span>🔧</span>' + t('how') + '</div><div class="detail-value">' + check.how + '</div></div>' +
+      '</div>' +
+      '<div class="measurement-box"><strong>📏 ' + t('standards') + '</strong>' + check.measurement + '</div>' +
+      '<div class="detail-item full" style="margin-top:10px;"><div class="detail-label"><span>💬</span>' + t('example') + '</div><div class="detail-value">' + check.example + '</div></div>' +
+      '<div class="tip-box"><span class="tip-icon">💡</span><span class="tip-text"><strong>' + t('quickTip') + ':</strong> ' + check.tip + '</span></div>' +
+    '</div>';
+  card.querySelector('.check-header').addEventListener('click', function(){ card.classList.toggle('open'); });
+  card.querySelector('.check-checkbox').addEventListener('click', function(e){
+    e.stopPropagation();
+    if(completed.has(check.id)){ completed.delete(check.id); card.classList.remove('completed'); this.textContent=''; }
+    else { completed.add(check.id); card.classList.add('completed'); this.textContent='✓'; }
+    updateProgress();
+  });
+  return card;
+}
+
+function renderAll(){
+  document.querySelectorAll('.zone-panel').forEach(p=>p.remove());
+  const main = document.getElementById('main-content');
+  ZONES.forEach(z=>{
+    const panel = document.createElement('div');
+    panel.className = 'zone-panel' + (z.id === activeZone ? ' active' : '');
+    panel.id = 'zone-panel-' + z.id;
+    const header = document.createElement('div');
+    header.className = 'zone-header';
+    header.innerHTML = '<div class="zone-icon">' + (ICONS['z'+z.id] || z.icon) + '</div><div class="zone-header-text"><h2>' + t('z'+z.id) + '</h2><p>' + t('zd'+z.id) + '</p></div>';
+    panel.appendChild(header);
+    const actions = document.createElement('div');
+    actions.className = 'zone-actions';
+    const bExpand = document.createElement('button'); bExpand.className='btn btn-outline'; bExpand.textContent=t('expandAll');
+    const bCollapse = document.createElement('button'); bCollapse.className='btn btn-outline'; bCollapse.textContent=t('collapseAll');
+    const bUnmark = document.createElement('button'); bUnmark.className='btn btn-outline'; bUnmark.textContent=t('unmarkAll');
+    const bMark = document.createElement('button'); bMark.className='btn btn-primary'; bMark.textContent=t('markAll');
+    actions.append(bExpand,bCollapse,bUnmark,bMark);
+    panel.appendChild(actions);
+    const list = document.createElement('div');
+    list.className = 'checks-list';
+    z.checks.forEach(c=>list.appendChild(buildCard(c)));
+    panel.appendChild(list);
+    const disc = document.createElement('div');
+    disc.className = 'zone-disclaimer';
+    disc.textContent = '⚕ ' + t('disclaimer');
+    panel.appendChild(disc);
+    bExpand.addEventListener('click', ()=>list.querySelectorAll('.check-card').forEach(c=>c.classList.add('open')));
+    bCollapse.addEventListener('click', ()=>list.querySelectorAll('.check-card').forEach(c=>c.classList.remove('open')));
+    bMark.addEventListener('click', ()=>{ z.checks.forEach(c=>completed.add(c.id)); refreshCards(list); });
+    bUnmark.addEventListener('click', ()=>{ z.checks.forEach(c=>completed.delete(c.id)); refreshCards(list); });
+    main.appendChild(panel);
+  });
+  applyFilters();
+  updateProgress();
+}
+function refreshCards(list){
+  list.querySelectorAll('.check-card').forEach(card=>{
+    const done = completed.has(card.dataset.id);
+    card.classList.toggle('completed', done);
+    card.querySelector('.check-checkbox').textContent = done ? '✓' : '';
+  });
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════
+// ZONES / SEARCH / FILTERS
+// ═══════════════════════════════════════════
+function switchZone(id){
+  activeZone = id;
+  document.querySelectorAll('.zone-tab').forEach(tab=>tab.classList.toggle('active', +tab.dataset.zone === id));
+  document.querySelectorAll('.zone-panel').forEach(p=>p.classList.toggle('active', p.id === 'zone-panel-' + id));
+}
+document.querySelectorAll('.zone-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{ document.getElementById('search-input').value=''; applyFilters(); switchZone(+tab.dataset.zone); });
+});
+document.querySelectorAll('.hero-badge[data-zone]').forEach(badge=>{
+  badge.addEventListener('click', ()=>{
+    switchZone(+badge.dataset.zone);
+    document.getElementById('zone-tabs').scrollIntoView({behavior:'smooth'});
+  });
+});
+document.querySelectorAll('.stat-pill[data-risk]').forEach(pill=>{
+  pill.addEventListener('click', ()=>{
+    riskFilter = (riskFilter === pill.dataset.risk) ? null : pill.dataset.risk;
+    document.querySelectorAll('.stat-pill[data-risk]').forEach(p=>p.classList.toggle('filter-on', p.dataset.risk === riskFilter));
+    applyFilters();
+  });
+});
+document.getElementById('search-input').addEventListener('input', applyFilters);
+
+function applyFilters(){
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const searching = q.length > 0;
+  let anyVisible = false;
+  ZONES.forEach(z=>{
+    const panel = document.getElementById('zone-panel-' + z.id);
+    if(!panel) return;
+    let zoneVisible = 0;
+    panel.querySelectorAll('.check-card').forEach(card=>{
+      const check = z.checks.find(c=>c.id === card.dataset.id);
+      const text = (check.title+' '+check.who+' '+check.what+' '+check.where+' '+check.why+' '+check.how+' '+check.measurement+' '+check.example+' '+check.tip).toLowerCase();
+      const matchQ = !searching || text.includes(q);
+      const matchR = !riskFilter || check.risk === riskFilter;
+      const show = matchQ && matchR;
+      card.style.display = show ? '' : 'none';
+      if(show) zoneVisible++;
+    });
+    if(searching || riskFilter){
+      panel.classList.toggle('active', zoneVisible > 0);
+      panel.querySelector('.zone-actions').style.display = 'none';
+    } else {
+      panel.classList.toggle('active', z.id === activeZone);
+      panel.querySelector('.zone-actions').style.display = '';
+    }
+    if(zoneVisible > 0) anyVisible = true;
+  });
+  document.getElementById('search-no-results').style.display = (searching || riskFilter) && !anyVisible ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════
+// THEMES / MODE / LANGUAGE
+// ═══════════════════════════════════════════
+const THEMES = [
+  {id:'sensory', name:'Peacock Teal',  c:'#1B6E7A'},
+  {id:'teal',   name:'Teal Calm',     c:'#14B8A6'},
+  {id:'amber',  name:'Warm Amber',    c:'#F59E0B'},
+  {id:'rose',   name:'Rose Care',     c:'#E11D48'},
+  {id:'violet', name:'Gentle Violet', c:'#7C3AED'},
+  {id:'ocean',  name:'Ocean Blue',    c:'#2563EB'},
+  {id:'forest', name:'Forest Green',  c:'#16A34A'}
+];
+function buildThemeMenu(){
+  const dd = document.getElementById('dd-theme');
+  dd.innerHTML = '<div class="dropdown-title">' + t('theme') + '</div>';
+  THEMES.forEach(th=>{
+    const row = document.createElement('button');
+    row.className = 'theme-row' + (th.id === theme ? ' selected' : '');
+    row.innerHTML = '<span class="theme-swatch" style="background:' + th.c + '"></span>' + th.name + (th.id === theme ? '<span class="check-mark">✓</span>' : '');
+    row.addEventListener('click', e=>{
+      e.stopPropagation();
+      theme = th.id;
+      document.body.dataset.theme = theme;
+      buildThemeMenu(); persist();
+    });
+    dd.appendChild(row);
+  });
+}
+function buildLangMenu(){
+  const dd = document.getElementById('dd-lang');
+  dd.innerHTML = '<div class="dropdown-title">🌐 Language</div>';
+  Object.keys(I18N).forEach(code=>{
+    const row = document.createElement('button');
+    row.className = 'theme-row' + (code === lang ? ' selected' : '');
+    row.innerHTML = '<span style="font-weight:800;font-size:11px;color:var(--accent);min-width:22px;">' + code.toUpperCase() + '</span>' + I18N[code].name + (code === lang ? '<span class="check-mark">✓</span>' : '');
+    row.addEventListener('click', e=>{
+      e.stopPropagation();
+      lang = code;
+      applyLang(); renderAll(); buildLangMenu(); buildManual(); buildCheat(); buildCollection(); persist();
+    });
+    dd.appendChild(row);
+  });
+  const note = document.createElement('div');
+  note.style.cssText = 'font-size:10.5px;color:var(--ink-soft);padding:8px;max-width:230px;line-height:1.4;';
+  note.textContent = t('langNote');
+  dd.appendChild(note);
+}
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.innerHTML = t(el.dataset.i18n); });
+  document.getElementById('search-input').placeholder = t('searchPh');
+  document.getElementById('lang-label').textContent = lang.toUpperCase();
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+}
+function toggleDropdown(id, e){
+  e.stopPropagation();
+  const dd = document.getElementById(id);
+  const wasOpen = dd.classList.contains('open');
+  document.querySelectorAll('.dropdown').forEach(d=>d.classList.remove('open'));
+  if(!wasOpen) dd.classList.add('open');
+}
+document.getElementById('btn-theme').addEventListener('click', e=>toggleDropdown('dd-theme', e));
+document.getElementById('btn-lang').addEventListener('click', e=>toggleDropdown('dd-lang', e));
+document.addEventListener('click', ()=>document.querySelectorAll('.dropdown').forEach(d=>d.classList.remove('open')));
+document.getElementById('btn-mode').addEventListener('click', function(){
+  mode = mode === 'light' ? 'dark' : 'light';
+  document.body.dataset.mode = mode;
+  this.textContent = mode === 'light' ? '🌙' : '☀️';
+  persist();
+});
+
+// ═══════════════════════════════════════════
+// SAVE / LOAD PROGRESS
+// ═══════════════════════════════════════════
+document.getElementById('btn-save').addEventListener('click', ()=>{
+  const data = { product:'SafeLife', module:'sensory-safety', version:1, savedAt:new Date().toISOString(), completed:[...completed], lang, theme, mode };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'SafeLife_SensorySafety_Progress_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+document.getElementById('btn-load').addEventListener('click', ()=>document.getElementById('load-file').click());
+document.getElementById('load-file').addEventListener('change', function(){
+  const file = this.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const d = JSON.parse(reader.result);
+      if(d.module !== 'sensory-safety' && !confirm('This file was saved from a different module. Load anyway?')) return;
+      completed.clear();
+      (d.completed||[]).forEach(id=>completed.add(id));
+      if(false && d.lang && I18N[d.lang]) lang = d.lang; /* language switching disabled for English-only release — remove "false &&" to re-enable */
+      if(d.theme) theme = d.theme;
+      if(d.mode) mode = d.mode;
+      document.body.dataset.theme = theme;
+      document.body.dataset.mode = mode;
+      document.getElementById('btn-mode').textContent = mode === 'light' ? '🌙' : '☀️';
+      applyLang(); renderAll(); buildThemeMenu(); buildLangMenu(); persist();
+    }catch(e){ alert('Could not read that file — is it a SafeLife progress file?'); }
+  };
+  reader.readAsText(file);
+  this.value = '';
+});
+
+// ═══════════════════════════════════════════
+// MODALS / PRINT / NAV
+// ═══════════════════════════════════════════
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click', ()=>closeModal(b.dataset.close)));
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click', e=>{ if(e.target === o) o.classList.remove('open'); }));
+document.getElementById('btn-manual').addEventListener('click', ()=>openModal('modal-manual'));
+document.getElementById('btn-cheat').addEventListener('click', ()=>openModal('modal-cheat'));
+document.getElementById('btn-print').addEventListener('click', ()=>openModal('modal-print'));
+document.getElementById('btn-search').addEventListener('click', ()=>{
+  const s = document.getElementById('search-input');
+  s.scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=>s.focus(), 350);
+});
+
+function doPrint(cls){
+  document.querySelectorAll('.modal-overlay').forEach(o=>o.classList.remove('open'));
+  const wasOpen = new Set([...document.querySelectorAll('.check-card.open')]);
+  document.querySelectorAll('.check-card').forEach(c=>c.classList.add('open'));
+  if(cls) document.body.classList.add(cls);
+  const cleanup = ()=>{
+    document.body.classList.remove('print-zone','print-cheat');
+    document.querySelectorAll('.check-card').forEach(c=>{ if(!wasOpen.has(c)) c.classList.remove('open'); });
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+  setTimeout(()=>window.print(), 60);
+}
+document.getElementById('print-all').addEventListener('click', ()=>doPrint(null));
+document.getElementById('print-zone').addEventListener('click', ()=>doPrint('print-zone'));
+document.getElementById('print-cheat2').addEventListener('click', ()=>doPrint('print-cheat'));
+document.getElementById('btn-print-cheat').addEventListener('click', ()=>doPrint('print-cheat'));
+
+function visibleCards(){
+  return [...document.querySelectorAll('.zone-panel.active .check-card')].filter(c=>c.style.display !== 'none');
+}
+function nearestCardIx(cards){
+  const mark = window.innerHeight * 0.35;
+  let best = 0, bestDist = Infinity;
+  cards.forEach((c, i)=>{
+    const d = Math.abs(c.getBoundingClientRect().top - mark);
+    if(d < bestDist){ bestDist = d; best = i; }
+  });
+  return best;
+}
+function goToCard(cards, ix){
+  if(ix < 0){ window.scrollTo({top:0, behavior:'smooth'}); return; }
+  if(ix > cards.length - 1) ix = cards.length - 1;
+  const y = cards[ix].getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.35;
+  window.scrollTo({top: Math.max(0, y), behavior:'smooth'});
+}
+document.getElementById('fn-top').addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+document.getElementById('fn-next').addEventListener('click', ()=>{
+  const cards = visibleCards(); if(!cards.length) return;
+  goToCard(cards, nearestCardIx(cards) + 1);
+});
+document.getElementById('fn-prev').addEventListener('click', ()=>{
+  const cards = visibleCards(); if(!cards.length) return;
+  goToCard(cards, nearestCardIx(cards) - 1);
+});
+
+// ═══════════════════════════════════════════
+// MANUAL / CHEAT SHEET / COLLECTION
+// ═══════════════════════════════════════════
+function buildManual(){
+  document.getElementById('manual-body').innerHTML =
+    t('manualBody') +
+    '<h4>⚕</h4><p>' + t('disclaimer') + ' ' + t('langNote') + '</p>';
+}
+
+const GOLDEN_RULES = [
+  'Never rearrange furniture or change the home layout without walking the visually impaired household member through the change first',
+  'Keep every doorway and cabinet fully open or fully closed — never left ajar across a walkway',
+  'Install visual (strobe) and vibrating alerts on every smoke and carbon monoxide alarm, tested on the same schedule as standard alarms',
+  'Keep a vibrating bed-shaker or under-pillow alarm device connected and tested for every household member who is deaf or hard of hearing',
+  'Mark step edges, glass doors and furniture corners with clear, consistent high-contrast markings',
+  'Keep spare hearing aid batteries or backup charging always stocked and easy to find',
+  'Give every frequently used item — keys, medication, glasses, hearing aids — one fixed, consistent "home base" location',
+  'Face the person, ensure good lighting on your face, and get their attention before speaking — never shout from another room',
+  'Rehearse evacuation routes and the household\'s buddy system physically and regularly, not just in conversation',
+  'Ask before helping, respect a "no thank you," and build every safety decision around the person\'s own independence and preference'
+];
+const KEY_NUMBERS = [
+  ['Recommended contrast strip width on step nosings','approximately 50–75mm (2–3in) — recognised accessible-design guidance'],
+  ['Glass door/panel manifestation marking heights','approximately 850–1000mm (33–39in) and 1400–1600mm (55–63in) from the floor — recognised accessible-design guidance'],
+  ['Maximum recommended threshold height change','approximately 13mm (0.5in) where a flush transition is not possible — recognised accessible-design guidance'],
+  ['Minimum clear pathway width along primary routes','approximately 900mm (35in) — recognised accessible-design guidance'],
+  ['Handrail mounting height','approximately 900mm (35in) from the stair nosing, continuous on both sides — recognised accessible-design guidance'],
+  ['Smoke and carbon monoxide alarm test frequency','at least monthly, with visual and vibrating alert devices tested on the same schedule — recognised fire-safety guidance'],
+  ['Alarm battery replacement frequency','at least annually, or per manufacturer guidance, with backup batteries always in stock'],
+  ['Hearing aid/cochlear implant daily care routine','a consistent cleaning, drying and storage routine every day — recognised audiology guidance'],
+  ['Spare hearing device battery supply','at least one full spare set kept at home and in any bag used away from home at all times'],
+  ['Home fire drill and evacuation rehearsal frequency','at least every few months, and after any change in the home layout, alarms, or household members\' sensory needs'],
+  ['Professional review of hearing devices','at least annually, or as recommended by the individual\'s audiologist — recognised audiology guidance'],
+  ['Professional review of vision and low-vision aids','at least annually, or as recommended by the individual\'s ophthalmologist or optometrist — recognised eye-care guidance'],
+  ['Orientation and mobility route-learning practice','at least one supervised practice trip before travelling any genuinely new route independently — recognised orientation-and-mobility guidance'],
+  ['Task lighting for close work and food preparation','supplementary, glare-controlled lighting in addition to general room lighting — recognised low-vision environmental design guidance']
+];
+
+const CONTACTS_KEY = 'safelife-sensory-contacts';
+const DEFAULT_CONTACTS = [
+  ['Emergency services',''],
+  ['GP / family doctor',''],
+  ['Audiologist',''],
+  ['Ophthalmologist / optometrist',''],
+  ['Orientation and mobility specialist',''],
+  ['Assistive-technology supplier',''],
+  ['Backup caregiver','']
+];
+let contacts;
+try{
+  const raw = localStorage.getItem(CONTACTS_KEY);
+  contacts = raw ? JSON.parse(raw) : null;
+}catch(e){ contacts = null; }
+if(!contacts || !Array.isArray(contacts.list)) contacts = { list: DEFAULT_CONTACTS.map(c=>c.slice()), notes:'' };
+function saveContacts(){
+  try{ localStorage.setItem(CONTACTS_KEY, JSON.stringify(contacts)); }catch(e){}
+  buildCheatPrint();
+}
+function buildCheat(){
+  const body = document.getElementById('cheat-body');
+  const rules = GOLDEN_RULES.map(r=>'<li>' + r + '</li>').join('');
+  const nums = KEY_NUMBERS.map(n=>'<tr><td><strong>' + n[0] + '</strong></td><td>' + n[1] + '</td></tr>').join('');
+  body.innerHTML =
+    '<h4>📞 ' + t('cheatContacts') + '</h4>' +
+    '<p style="font-size:12px;color:var(--ink-soft);margin-bottom:8px;">' + t('cheatHint') + '</p>' +
+    '<div id="contact-rows"></div>' +
+    '<button class="btn btn-outline" id="add-contact" style="margin:8px 0 4px;">' + t('addContact') + '</button>' +
+    '<h4>⭐ ' + t('rules') + '</h4><ul class="rule-list">' + rules + '</ul>' +
+    '<h4>📏 ' + t('keyNums') + '</h4><table><tr><th>Check</th><th>Safe value / standard</th></tr>' + nums + '</table>' +
+    '<h4>📝 ' + t('myNotes') + '</h4>' +
+    '<textarea id="cheat-notes" placeholder="' + t('notesPh') + '" style="width:100%;min-height:80px;border:1px solid var(--line);border-radius:8px;background:var(--tile);color:var(--ink);padding:10px 12px;font-family:\'Inter\',sans-serif;font-size:13px;resize:vertical;"></textarea>';
+  renderContactRows();
+  const notesEl = document.getElementById('cheat-notes');
+  notesEl.value = contacts.notes || '';
+  notesEl.addEventListener('input', function(){ contacts.notes = this.value; saveContacts(); });
+  document.getElementById('add-contact').addEventListener('click', function(){
+    contacts.list.push(['','']);
+    renderContactRows(); saveContacts();
+    const rows = document.querySelectorAll('#contact-rows .c-name');
+    rows[rows.length-1].focus();
+  });
+  buildCheatPrint();
+}
+function renderContactRows(){
+  const wrap = document.getElementById('contact-rows');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  const inputCss = 'border:1px solid var(--line);border-radius:8px;background:var(--tile);color:var(--ink);padding:8px 10px;font-family:\'Inter\',sans-serif;font-size:13px;';
+  contacts.list.forEach((c, ix)=>{
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:6px;margin-bottom:6px;align-items:center;';
+    const name = document.createElement('input');
+    name.className = 'c-name'; name.type = 'text'; name.value = c[0];
+    name.placeholder = 'Name / service'; name.style.cssText = inputCss + 'flex:1.4;min-width:0;';
+    const num = document.createElement('input');
+    num.type = 'text'; num.value = c[1];
+    num.placeholder = '+ number'; num.style.cssText = inputCss + 'flex:1;min-width:0;font-weight:700;';
+    const del = document.createElement('button');
+    del.textContent = '✕'; del.title = t('delRow');
+    del.style.cssText = 'border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);border-radius:8px;width:30px;height:34px;cursor:pointer;flex-shrink:0;';
+    name.addEventListener('input', function(){ contacts.list[ix][0] = this.value; saveContacts(); });
+    num.addEventListener('input', function(){ contacts.list[ix][1] = this.value; saveContacts(); });
+    del.addEventListener('click', function(){ contacts.list.splice(ix,1); renderContactRows(); saveContacts(); });
+    row.append(name, num, del);
+    wrap.appendChild(row);
+  });
+}
+function buildCheatPrint(){
+  const esc = s => String(s).replace(/</g,'&lt;');
+  const filled = contacts.list.filter(c=>c[0] || c[1]);
+  const chips = filled.map(h=>'<div class="cp-chip"><b>' + esc(h[0]||'—') + '</b><span>' + (esc(h[1]) || '____________') + '</span></div>').join('');
+  const activeQR = getSavedQR() || QR_IMAGE;
+  const qr = activeQR
+    ? '<img src="' + activeQR + '" alt="QR">'
+    : '<div class="qr-ph">' + (STORE_URL ? esc(STORE_URL) : 'Your QR<br>code here') + '</div>';
+  document.getElementById('cheat-print').innerHTML =
+    '<div class="cp-card">' +
+      '<div class="cp-head">' + ICONS.stage +
+        '<div><div class="cp-title">Safe<em>Life</em></div>' +
+        '<div class="cp-sub">' + t('cheatTitle') + ' · ' + t('heroTitle') + '</div></div>' +
+        '<div class="cp-tag">"To all moms by a mom"<br>NEBOSH &amp; OSHA trained HSE professional</div>' +
+      '</div>' +
+      '<div class="cp-contacts">' + chips + '</div>' +
+      '<div class="cp-cols">' +
+        '<div class="cp-rules"><h3>⭐ ' + t('rules') + '</h3><ul>' + rules + '</ul></div>' +
+        '<div class="cp-numsec"><h3>📏 ' + t('keyNums') + '</h3><table>' + nums + '</table></div>' +
+      '</div>' +
+      (contacts.notes ? '<div class="cp-notes"><b>' + t('myNotes') + '</b>' + esc(contacts.notes) + '</div>' : '') +
+      '<div class="cp-foot">' +
+        '<div>Made with care by <b>' + BRAND_NAME + '</b> · SafeLife Collection<br>' + t('disclaimer') + '</div>' +
+        '<div class="cp-qr">' + (STORE_URL ? '<div style="font-size:8px;">' + esc(STORE_URL) + '<br>Scan for the full collection</div>' : '') + qr + '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+// ═══════════════════════════════════════════
+// SELLER: per-product QR code, PIN-protected (each file's own STORE_KEY keeps these separate)
+// ═══════════════════════════════════════════
+const QR_KEY = STORE_KEY + '-qr';
+const QR_PIN_KEY = STORE_KEY + '-qrpin';
+function getSavedQR(){ try{ return localStorage.getItem(QR_KEY) || ''; }catch(e){ return ''; } }
+function sellerRenderLocked(){
+  const hasPin = !!localStorage.getItem(QR_PIN_KEY);
+  document.getElementById('seller-body').innerHTML = hasPin
+    ? '<p>Enter your PIN to manage this file\'s QR code.</p><input type="password" inputmode="numeric" maxlength="12" id="seller-pin-input" placeholder="PIN" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--tile);color:var(--ink);font-size:15px;letter-spacing:2px;margin-bottom:10px;">'
+      + '<div class="modal-actions"><button class="btn btn-primary" id="seller-unlock">Unlock</button></div>'
+    : '<p>No PIN set yet for this file. Create one now — you\'ll need it to change the QR code later. Every product file keeps its own separate PIN and QR code.</p>'
+      + '<input type="password" inputmode="numeric" maxlength="12" id="seller-pin-new" placeholder="Create a PIN" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--tile);color:var(--ink);font-size:15px;letter-spacing:2px;margin-bottom:8px;">'
+      + '<input type="password" inputmode="numeric" maxlength="12" id="seller-pin-confirm" placeholder="Confirm PIN" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--tile);color:var(--ink);font-size:15px;letter-spacing:2px;margin-bottom:10px;">'
+      + '<div class="modal-actions"><button class="btn btn-primary" id="seller-setpin">Set PIN</button></div>';
+  if(hasPin){
+    document.getElementById('seller-unlock').addEventListener('click', function(){
+      const val = document.getElementById('seller-pin-input').value;
+      if(val && val === localStorage.getItem(QR_PIN_KEY)) sellerRenderUnlocked();
+      else alert('Incorrect PIN.');
+    });
+  } else {
+    document.getElementById('seller-setpin').addEventListener('click', function(){
+      const a = document.getElementById('seller-pin-new').value, b = document.getElementById('seller-pin-confirm').value;
+      if(!a || a.length < 4){ alert('Use at least 4 digits.'); return; }
+      if(a !== b){ alert('PINs do not match.'); return; }
+      try{ localStorage.setItem(QR_PIN_KEY, a); }catch(e){}
+      sellerRenderUnlocked();
+    });
+  }
+}
+function sellerRenderUnlocked(){
+  const current = getSavedQR();
+  document.getElementById('seller-body').innerHTML =
+    '<p>Upload this product\'s QR code image. It replaces the placeholder on the printed cheat sheet — saved on this device only, separately for every product file.</p>' +
+    (current ? '<img src="' + current + '" style="width:110px;height:110px;border:1px solid var(--line);border-radius:9px;margin-bottom:10px;object-fit:contain;background:#fff;">' : '') +
+    '<input type="file" accept="image/*" id="seller-qr-file" style="margin-bottom:10px;">' +
+    '<div class="modal-actions">' +
+      '<button class="btn btn-outline" id="seller-remove-qr">Remove QR</button>' +
+      '<button class="btn btn-outline" id="seller-change-pin">Change PIN</button>' +
+      '<button class="btn btn-primary" id="seller-done">Done</button>' +
+    '</div>';
+  document.getElementById('seller-qr-file').addEventListener('change', function(e){
+    const file = e.target.files && e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      try{ localStorage.setItem(QR_KEY, ev.target.result); }catch(e){}
+      buildCheatPrint();
+      sellerRenderUnlocked();
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('seller-remove-qr').addEventListener('click', function(){
+    try{ localStorage.removeItem(QR_KEY); }catch(e){}
+    buildCheatPrint();
+    sellerRenderUnlocked();
+  });
+  document.getElementById('seller-change-pin').addEventListener('click', function(){
+    try{ localStorage.removeItem(QR_PIN_KEY); }catch(e){}
+    sellerRenderLocked();
+  });
+  document.getElementById('seller-done').addEventListener('click', ()=>closeModal('modal-seller'));
+}
+document.getElementById('btn-seller').addEventListener('click', function(){ sellerRenderLocked(); openModal('modal-seller'); });
+
+const MODULES = [
+  {a:'0–28 Days'},
+  {a:'1–12 Months'},
+  {a:'1–3 Years'},
+  {a:'3–6 Years'},
+  {a:'6–12 Years'},
+  {a:'13–18 Years'},
+  {a:'19–29 Years'},
+  {a:'30–44 Years'},
+  {a:'45–64 Years'},
+  {a:'65–79 Years'},
+  {a:'80–89 Years'},
+  {a:'90+ Years'}
+];
+const MODULE_ICON_IX = [0,0,1,2,3,4,5,6,6,7,7,7];
+const SITUATION_MODULES = [
+  {name:'Pregnancy', sub:'Stage 0', status:'available', emoji:'🤰'},
+  {name:'Postpartum Recovery', sub:'Situation Module', status:'available', emoji:'🌷'},
+  {name:'Grandparent-Proofing', sub:'Situation Module', status:'available', emoji:'👵'},
+  {name:'Autism & Neurodivergent Children', sub:'Situation Module', status:'available', emoji:'♾️'},
+  {name:'Emergency Preparedness', sub:'Situation Module', status:'available', emoji:'🧳'},
+  {name:'Twins & Multiples', sub:'Situation Module', status:'available', emoji:'👯'},
+  {name:'Babysitter/Nanny Handover', sub:'Situation Module', status:'available', emoji:'🗒️'},
+  {name:'Dementia & Alzheimer\'s Care', sub:'Situation Module', status:'available', emoji:'🏠'},
+  {name:'Injury & Post-Surgery Recovery', sub:'Situation Module', status:'available', emoji:'🩹'},
+  {name:'Chronic Conditions Household', sub:'Situation Module', status:'available', emoji:'💊'},
+  {name:'Limited Mobility / Wheelchair', sub:'Situation Module', status:'available', emoji:'♿'},
+  {name:'Visually / Hearing Impaired', sub:'Situation Module', status:'current', emoji:'🦯'},
+  {name:'New Pet + Baby Household', sub:'Coming Soon', status:'coming', emoji:'🐾'},
+  {name:'The Caregiver\'s Own Safety', sub:'Coming Soon', status:'coming', emoji:'🤲'},
+  {name:'New Home Move-In Audit', sub:'Coming Soon', status:'coming', emoji:'🏡'},
+  {name:'Farm & Rural Household', sub:'Coming Soon', status:'coming', emoji:'🚜'},
+  {name:'Home Office / WFH', sub:'Coming Soon', status:'coming', emoji:'💻'}
+];
+function buildSituationGrid(){
+  const grid = document.getElementById('situation-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  SITUATION_MODULES.forEach(m=>{
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    const tagClass = m.status === 'coming' ? 'coming' : (m.status === 'current' ? 'owned' : 'addon');
+    const tagLabel = m.status === 'coming' ? 'Coming Soon' : (m.status === 'current' ? '✓ Current Module' : 'Available Separately');
+    card.innerHTML = '<span class="m-emoji">' + m.emoji + '</span><span class="m-name">' + m.name + '</span><span class="m-age">' + m.sub + '</span>' +
+      '<span class="module-tag ' + tagClass + '">' + tagLabel + '</span>';
+    grid.appendChild(card);
+  });
+}
+
+function buildCollection(){
+  const grid = document.getElementById('collection-grid');
+  grid.innerHTML = '';
+  MODULES.forEach((m, mi)=>{
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    const iconIx = MODULE_ICON_IX[mi] != null ? MODULE_ICON_IX[mi] : mi;
+    card.innerHTML = '<span class="m-emoji">' + ICONS.stages[iconIx] + '</span><span class="m-name">' + t('mn'+(mi+1)) + '</span><span class="m-age">' + m.a + '</span>' +
+      '<span class="module-tag ' + (m.owned ? 'owned' : 'addon') + '">' + (m.owned ? t('owned') : t('addon')) + '</span>';
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+restore();
+injectIcons();
+document.body.dataset.theme = theme;
+document.body.dataset.mode = mode;
+document.getElementById('btn-mode').textContent = mode === 'light' ? '🌙' : '☀️';
+applyLang();
+fillStats();
+renderAll();
+buildThemeMenu();
+buildLangMenu();
+buildManual();
+buildCheat();
+buildCollection();
+buildSituationGrid();
+</script>
+</body>
+</html>
